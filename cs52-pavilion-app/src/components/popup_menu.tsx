@@ -1,4 +1,5 @@
 export type PopupMenuProps = {
+  onOpenChat?: () => void;
   image: string;
   profile: {
     name: string;
@@ -17,9 +18,9 @@ export type PopupMenuProps = {
   };
 };
 
-function PopupMenu({ image, profile, contact, facts }: PopupMenuProps) {
+function PopupMenu({ onOpenChat, image, profile, contact, facts }: PopupMenuProps) {
   const handleClick = () => {
-    console.log("Chat with this Person on Pavilion");
+    onOpenChat?.();
   };
 
   return (
@@ -57,7 +58,9 @@ function PopupMenu({ image, profile, contact, facts }: PopupMenuProps) {
         </div>
 
         {/* Button to chat */}
-        <button onClick={handleClick}>Chat with this Person on Pavilion</button>
+        <button type="button" onClick={handleClick}>
+          Chat with this Person on Pavilion
+        </button>
       </div>
     </div>
   );

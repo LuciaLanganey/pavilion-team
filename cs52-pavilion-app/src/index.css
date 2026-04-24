@@ -111,3 +111,32 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.app-chat-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  padding: 16px;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.app-chat-header {
+  flex-shrink: 0;
+}
+
+.app-back-button {
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.app-back-button:hover {
+  background: var(--social-bg);
+}
