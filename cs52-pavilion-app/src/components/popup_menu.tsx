@@ -15,6 +15,7 @@ export type PopupMenuProps = {
     responseTime: string;
     preferences: string;
   };
+  onChat?: () => void;
 };
 
 function displayWebsite(url: string) {
@@ -31,7 +32,7 @@ const sectionCardClass =
 const contactLinkClass = "break-all font-medium text-blue-700 hover:underline";
 const plainLinkClass = "font-medium text-blue-700 hover:underline";
 
-function PopupMenu({ image, profile, contact, facts }: PopupMenuProps) {
+function PopupMenu({ image, profile, contact, facts, onChat }: PopupMenuProps) {
   const websiteLabel = displayWebsite(contact.website);
   const phoneHref = `tel:${contact.phoneNumber.replace(/\D/g, "")}`;
 
@@ -92,7 +93,7 @@ function PopupMenu({ image, profile, contact, facts }: PopupMenuProps) {
 
           <button
             type="button"
-            onClick={() => {}}
+            onClick={() => onChat?.()}
             className="w-full rounded-xl bg-blue-600 px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Chat with this Person on Pavilion

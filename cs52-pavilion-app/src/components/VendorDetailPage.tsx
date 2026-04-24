@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PopupMenu, { type PopupMenuProps } from "./popup_menu";
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
 
@@ -128,10 +129,30 @@ const contacts = Array.from({ length: 4 }, (_, i) => ({
   image: "https://randomuser.me/api/portraits/men/32.jpg",
 }));
 
+const firstLarryMarPopupProps: PopupMenuProps = {
+  image: contacts[0].image,
+  profile: {
+    name: contacts[0].name,
+    role: contacts[0].role,
+    location: contacts[0].location,
+    bio: "Larry supports California schools and agencies with tailored sanitizer and cleaning programs, quick samples, and reliable follow-through on large bids.",
+  },
+  contact: {
+    email: "larry.mar@imperialdade.com",
+    phoneNumber: "(408) 555-0142",
+    website: "https://www.imperialdade.com",
+  },
+  facts: {
+    responseTime: "Typically replies within one business day on Pavilion requests.",
+    preferences: "Prefers detailed line-item RFPs and can coordinate on-site walkthroughs in the Bay Area.",
+  },
+};
+
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function VendorDetailPage() {
   const [contactsOpen, setContactsOpen] = useState(true);
+  const [larryPopupOpen, setLarryPopupOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -318,26 +339,48 @@ export default function VendorDetailPage() {
 
                 {contactsOpen && (
                   <div>
-                    {contacts.map((contact) => (
-                      <div
-                        key={contact.id}
-                        className="flex items-start gap-3 px-4 py-3.5 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
-                      >
-                        <img
-                          src={contact.image}
-                          alt={contact.name}
-                          className="w-12 h-12 rounded-full object-cover shrink-0 bg-gray-200"
-                        />
-                        <div className="min-w-0">
-                          <div className="font-semibold text-gray-900 text-sm">{contact.name}</div>
-                          <div className="text-xs text-gray-500 mt-0.5 leading-snug">{contact.role}</div>
-                          <div className="flex items-center gap-1 mt-1 text-xs text-gray-400">
-                            <MapPinIcon />
-                            {contact.location}
+                    {contacts.map((contact) => {
+                      const body = (
+                        <>
+                          <img
+                            src={contact.image}
+                            alt={contact.id === 0 ? "" : contact.name}
+                            className="w-12 h-12 rounded-full object-cover shrink-0 bg-gray-200"
+                          />
+                          <div className="min-w-0">
+                            <div className="font-semibold text-gray-900 text-sm">{contact.name}</div>
+                            <div className="text-xs text-gray-500 mt-0.5 leading-snug">{contact.role}</div>
+                            <div className="flex items-center gap-1 mt-1 text-xs text-gray-400">
+                              <MapPinIcon />
+                              {contact.location}
+                            </div>
                           </div>
+                        </>
+                      );
+
+                      if (contact.id === 0) {
+                        return (
+                          <button
+                            key={contact.id}
+                            type="button"
+                            className="flex w-full cursor-pointer items-start gap-3 border-b border-gray-100 px-4 py-3.5 text-left transition-colors hover:bg-indigo-50/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
+                            onClick={() => setLarryPopupOpen(true)}
+                            aria-label={`Open profile for ${contact.name}`}
+                          >
+                            {body}
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={contact.id}
+                          className="flex items-start gap-3 border-b border-gray-100 px-4 py-3.5 last:border-0 hover:bg-gray-50 transition-colors"
+                        >
+                          {body}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -346,6 +389,34 @@ export default function VendorDetailPage() {
           </div>
         </main>
       </div>
+
+      {larryPopupOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4"
+          role="presentation"
+          onClick={() => setLarryPopupOpen(false)}
+        >
+          <div
+            className="relative max-h-[min(90vh,900px)] w-full max-w-4xl overflow-y-auto rounded-[2rem] pt-12 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="larry-popup-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="absolute right-4 top-4 z-10 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-700 shadow ring-1 ring-gray-200 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              onClick={() => setLarryPopupOpen(false)}
+            >
+              Close
+            </button>
+            <div id="larry-popup-title" className="sr-only">
+              {firstLarryMarPopupProps.profile.name} profile
+            </div>
+            <PopupMenu {...firstLarryMarPopupProps} onChat={() => setLarryPopupOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
