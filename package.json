@@ -1,0 +1,10 @@
+{
+  "name": "pavilion-team",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix cs52-pavilion-app",
+    "build": "npm run build --prefix cs52-pavilion-app",
+    "lint": "npm run lint --prefix cs52-pavilion-app",
+    "preview": "npm run preview --prefix cs52-pavilion-app"
+  }
+}

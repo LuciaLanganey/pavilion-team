@@ -1,8 +1,7 @@
-import PopupMenu from "./components/popup_menu";
-import sampleRep from "./util/sales_rep";
+import VendorDetailPage from "./components/VendorDetailPage";
 
 function App() {
-  return <PopupMenu {...sampleRep} />;
+  return <VendorDetailPage />;
 }
 
 export default App;
