@@ -48,10 +48,15 @@ export default defineSchema({
     createdAt: v.number(),
     editedAt: v.optional(v.number()),
     isDeleted: v.boolean(),
+    // Email sync fields — set when a message arrives via inbound email
+    source: v.optional(v.union(v.literal("app"), v.literal("email"))),
+    senderEmail: v.optional(v.string()),
+    emailMessageId: v.optional(v.string()),
   })
     .index("by_conversationId", ["conversationId"])
     .index("by_conversationId_and_createdAt", ["conversationId", "createdAt"])
-    .index("by_senderId", ["senderId"]),
+    .index("by_senderId", ["senderId"])
+    .index("by_emailMessageId", ["emailMessageId"]),
 
   messageReads: defineTable({
     conversationId: v.id("conversations"),
@@ -73,4 +78,14 @@ export default defineSchema({
   })
     .index("by_messageId", ["messageId"])
     .index("by_uploadedBy", ["uploadedBy"]),
+
+  // Inbound emails that were rejected (unknown sender, invalid thread, etc.)
+  rejectedEmails: defineTable({
+    receivedAt: v.number(),
+    fromEmail: v.string(),
+    toAddress: v.string(),
+    subject: v.string(),
+    reason: v.string(),
+    rawThreadId: v.optional(v.string()),
+  }).index("by_receivedAt", ["receivedAt"]),
 });

@@ -104,6 +104,31 @@
   max-height: 70vh;
 }
 
+.chat-thread-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.chat-thread-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-bubble-source {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-left: 4px;
+}
+
 .chat-messages-list {
   flex: 1;
   overflow-y: auto;
@@ -187,3 +212,75 @@
   justify-content: center;
   padding: 2rem;
 }
+
+/* Export button styles */
+.export-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 8px 12px;
+  align-items: stretch;
+}
+
+.export-button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--social-bg);
+  color: var(--text-h);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.export-button:hover:not(:disabled) {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.export-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c00;
+  font-size: 13px;
+}
+
+.export-error-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.export-error-text {
+  flex: 1;
+}
+
+.export-error-dismiss {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #c00;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.export-error-dismiss:hover {
+  opacity: 0.7;
+}
+

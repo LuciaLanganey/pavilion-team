@@ -8,6 +8,7 @@ import {
   useSendMessage,
   useMarkRead,
 } from "./hooks";
+import ExportPdfButton from "./ExportPdfButton";
 import "./chat.css";
 
 const DEMO_USER_EMAIL = "alice@example.com";
@@ -30,6 +31,7 @@ type MessageListItem = {
   createdAt: number;
   editedAt?: number;
   isDeleted: boolean;
+  source?: "app" | "email";
 };
 
 function ConversationSidebar({
@@ -77,7 +79,11 @@ function ChatThread({
   conversationId: Id<"conversations">;
   currentUserId: Id<"users">;
 }) {
+  // All hooks must be called unconditionally before any early return
   const messages = useMessages(conversationId);
+  const conversation = useQuery(api.functions.conversations.queries.getConversation, {
+    conversationId,
+  });
   const sendMessage = useSendMessage();
   const markRead = useMarkRead();
   const [inputValue, setInputValue] = useState("");
@@ -100,9 +106,7 @@ function ChatThread({
   const handleSend = async () => {
     const content = inputValue.trim();
     if (!content) return;
-
     setInputValue("");
-
     try {
       await sendMessage({
         conversationId,
@@ -129,6 +133,17 @@ function ChatThread({
 
   return (
     <div className="chat-thread">
+      {/* Thread header with title and export button */}
+      <div className="chat-thread-header">
+        <span className="chat-thread-title">
+          {conversation?.title ?? "Conversation"}
+        </span>
+        <ExportPdfButton
+          conversationId={conversationId}
+          conversationTitle={conversation?.title}
+        />
+      </div>
+
       <div className="chat-messages-list">
         {messages.length === 0 && (
           <p className="chat-empty">No messages yet. Say hello!</p>
@@ -142,6 +157,9 @@ function ChatThread({
               <em>This message was deleted.</em>
             ) : (
               <span>{msg.content}</span>
+            )}
+            {msg.source === "email" && (
+              <small className="chat-bubble-source"> · via email</small>
             )}
             {msg.editedAt && <small> (edited)</small>}
           </div>
