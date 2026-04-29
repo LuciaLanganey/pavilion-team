@@ -150,7 +150,7 @@ const firstLarryMarPopupProps: PopupMenuProps = {
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export default function VendorDetailPage() {
+export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => void }) {
   const [contactsOpen, setContactsOpen] = useState(true);
   const [larryPopupOpen, setLarryPopupOpen] = useState(false);
 
@@ -413,7 +413,7 @@ export default function VendorDetailPage() {
             <div id="larry-popup-title" className="sr-only">
               {firstLarryMarPopupProps.profile.name} profile
             </div>
-            <PopupMenu {...firstLarryMarPopupProps} onChat={() => setLarryPopupOpen(false)} />
+            <PopupMenu {...firstLarryMarPopupProps} onOpenChat={onOpenChat} />
           </div>
         </div>
       )}
