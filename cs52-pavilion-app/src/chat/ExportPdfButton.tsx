@@ -246,9 +246,12 @@ function generatePdf(
   doc.save(`procurement-record_${safeTitle}_${Date.now()}.pdf`);
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Hook (used by the chat menu) ──────────────────────────────────────────────
 
-export default function ExportPdfButton({ conversationId, conversationTitle }: Props) {
+export function useExportPdf(
+  conversationId: Id<"conversations">,
+  conversationTitle: string | undefined,
+) {
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -256,17 +259,17 @@ export default function ExportPdfButton({ conversationId, conversationTitle }: P
     api.functions.messages.queries.exportMessages,
     { conversationId },
   );
-
   const members = useQuery(
     api.functions.conversations.queries.getConversationMembers,
     { conversationId },
   );
 
+  const isLoading = messages === undefined || members === undefined;
+
   const handleExport = () => {
     if (!messages || !members) return;
     setExporting(true);
     setError(null);
-
     try {
       generatePdf(
         messages as Message[],
@@ -282,7 +285,16 @@ export default function ExportPdfButton({ conversationId, conversationTitle }: P
     }
   };
 
-  const isLoading = messages === undefined || members === undefined;
+  return { handleExport, isLoading, exporting, error, clearError: () => setError(null) };
+}
+
+// ── Standalone component (kept for backwards compatibility) ───────────────────
+
+export default function ExportPdfButton({ conversationId, conversationTitle }: Props) {
+  const { handleExport, isLoading, exporting, error } = useExportPdf(
+    conversationId,
+    conversationTitle,
+  );
 
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
