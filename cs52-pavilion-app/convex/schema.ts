@@ -88,4 +88,18 @@ export default defineSchema({
     reason: v.string(),
     rawThreadId: v.optional(v.string()),
   }).index("by_receivedAt", ["receivedAt"]),
+  
+  
+  people: defineTable({
+    name: v.string(),
+    email: v.string(),
+    phone: v.string(),
+    website: v.string(),
+    role: v.string(),
+    bio: v.string(),
+    location: v.string(),
+    avatarUrl: v.string(),
+    company: v.string(),
+  }),
+  
 });
