@@ -5,18 +5,11 @@ import "./index.css";
 import App from "./App.tsx";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined;
-if (!convexUrl) {
-  throw new Error(
-    "Missing VITE_CONVEX_URL. Add it to .env.local (from `npx convex dev` or the Convex dashboard).",
-  );
-}
-
-const convex = new ConvexReactClient(convexUrl);
+const convex = convexUrl ? new ConvexReactClient(convexUrl) : null;
+const app = <App isConvexConfigured={Boolean(convex)} />;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ConvexProvider client={convex}>
-      <App />
-    </ConvexProvider>
+    {convex ? <ConvexProvider client={convex}>{app}</ConvexProvider> : app}
   </StrictMode>,
 );
