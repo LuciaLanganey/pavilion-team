@@ -21,6 +21,7 @@ import type * as lib_email_sendEmail from "../lib/email/sendEmail.js";
 import type * as lib_email_templates_newMessageNotification from "../lib/email/templates/newMessageNotification.js";
 import type * as lib_email_types from "../lib/email/types.js";
 import type * as lib_helpers from "../lib/helpers.js";
+import type * as people from "../people.js";
 import type * as seed from "../seed.js";
 
 import type {
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "lib/email/templates/newMessageNotification": typeof lib_email_templates_newMessageNotification;
   "lib/email/types": typeof lib_email_types;
   "lib/helpers": typeof lib_helpers;
+  people: typeof people;
   seed: typeof seed;
 }>;
 
