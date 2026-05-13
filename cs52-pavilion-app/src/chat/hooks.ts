@@ -2,6 +2,10 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 
+export function useListAllUsers() {
+  return useQuery(api.functions.users.queries.listAllUsers, {});
+}
+
 export function useUser(userId: Id<"users"> | undefined) {
   return useQuery(
     api.functions.users.queries.getUser,
