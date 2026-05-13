@@ -9,6 +9,8 @@ export default defineSchema({
     tokenIdentifier: v.optional(v.string()),
     createdAt: v.number(),
     lastSeenAt: v.optional(v.number()),
+    username: v.optional(v.string()),
+    userRole: v.optional(v.union(v.literal("vendor"), v.literal("buyer"))),
   })
     .index("by_email", ["email"])
     .index("by_token", ["tokenIdentifier"]),

@@ -22,6 +22,8 @@ export const seedDemoData = mutation({
       email: "alice@example.com",
       createdAt: timestamp - 86400000 * 7,
       lastSeenAt: timestamp - 60000,
+      username: "alice_chen",
+      userRole: "vendor",
     });
 
     const bobId = await ctx.db.insert("users", {
@@ -29,6 +31,8 @@ export const seedDemoData = mutation({
       email: "bob@example.com",
       createdAt: timestamp - 86400000 * 5,
       lastSeenAt: timestamp - 3600000,
+      username: "bob_martinez",
+      userRole: "buyer",
     });
 
     const carolId = await ctx.db.insert("users", {
@@ -36,6 +40,8 @@ export const seedDemoData = mutation({
       email: "carol@example.com",
       createdAt: timestamp - 86400000 * 3,
       lastSeenAt: timestamp - 7200000,
+      username: "carol_kim",
+      userRole: "buyer",
     });
 
     const dmId = await ctx.db.insert("conversations", {
@@ -163,5 +169,87 @@ export const seedDemoData = mutation({
       dmId,
       groupId,
     };
+  },
+});
+
+export const seedExtraUsers = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const timestamp = Date.now();
+    const extraUsers = [
+      {
+        name: "Jordan Blake",
+        email: "jordan.blake@supplyhub.com",
+        avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
+        createdAt: timestamp - 86400000 * 10,
+        lastSeenAt: timestamp - 3600000,
+        username: "jordan_blake",
+        userRole: "vendor" as const,
+      },
+      {
+        name: "Aisha Okonkwo",
+        email: "aisha.okonkwo@marketbridge.io",
+        avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
+        createdAt: timestamp - 86400000 * 8,
+        lastSeenAt: timestamp - 7200000,
+        username: "aisha_okw",
+        userRole: "buyer" as const,
+      },
+      {
+        name: "Derek Nguyen",
+        email: "derek.nguyen@tradeflow.com",
+        avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
+        createdAt: timestamp - 86400000 * 6,
+        lastSeenAt: timestamp - 1800000,
+        username: "dereknguyen92",
+        userRole: "vendor" as const,
+      },
+      {
+        name: "Sofia Reyes",
+        email: "sofia.reyes@shopcraft.co",
+        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
+        createdAt: timestamp - 86400000 * 4,
+        lastSeenAt: timestamp - 600000,
+        username: "sofia_crafts",
+        userRole: "buyer" as const,
+      },
+      {
+        name: "Eli Thornton",
+        email: "eli.thornton@bulkdirect.net",
+        avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
+        createdAt: timestamp - 86400000 * 2,
+        lastSeenAt: timestamp - 900000,
+        username: "eli_thornton",
+        userRole: "vendor" as const,
+      },
+    ];
+
+    const inserted: string[] = [];
+    for (const user of extraUsers) {
+      const exists = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", user.email))
+        .unique();
+      if (!exists) {
+        await ctx.db.insert("users", user);
+        inserted.push(user.email);
+      }
+    }
+    return { inserted };
+  },
+});
+
+export const migrateSellerToBuyer = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect();
+    let patched = 0;
+    for (const user of allUsers) {
+      if ((user.userRole as string) === "seller") {
+        await ctx.db.patch(user._id, { userRole: "buyer" });
+        patched++;
+      }
+    }
+    return { patched };
   },
 });

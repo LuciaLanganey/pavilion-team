@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+// useQuery and api are still used by ChatThread (getConversation)
 import {
   useConversations,
   useConversationMembers,
@@ -12,7 +13,6 @@ import {
 import { useExportPdf } from "./ExportPdfButton";
 import "./chat.css";
 
-const DEMO_USER_EMAIL = "alice@example.com";
 
 type ConversationListItem = {
   _id: Id<"conversations">;
@@ -636,42 +636,13 @@ function ChatThread({
 
 export default function MessagingPage({
   onCollapseToMain,
+  currentUserId,
 }: {
   onCollapseToMain?: (convId: Id<"conversations">) => void;
+  currentUserId: Id<"users">;
 }) {
   const [activeConversationId, setActiveConversationId] =
     useState<Id<"conversations"> | null>(null);
-
-  const demoUser = useQuery(api.functions.users.queries.getUserByEmail, {
-    email: DEMO_USER_EMAIL,
-  });
-
-  if (demoUser === undefined) {
-    return (
-      <div className="chat-page chat-page--centered">
-        <p>Loading chat…</p>
-      </div>
-    );
-  }
-
-  if (demoUser === null) {
-    return (
-      <div className="chat-page chat-page--centered chat-page--notice">
-        <p>
-          No demo user found. From the <code>cs52-pavilion-app</code> directory, run Convex dev and
-          seed the database:
-        </p>
-        <pre className="chat-code-block">
-          npx convex dev{"\n"}npx convex run seed:seedDemoData
-        </pre>
-        <p>
-          This loads <strong>{DEMO_USER_EMAIL}</strong> as the signed-in user for the chat UI.
-        </p>
-      </div>
-    );
-  }
-
-  const currentUserId = demoUser._id;
 
   return (
     <div className="chat-messaging-layout">

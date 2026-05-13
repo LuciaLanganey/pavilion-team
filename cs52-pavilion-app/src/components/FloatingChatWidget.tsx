@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+// useQuery and api are used by ActiveConvHeader (getConversationMembers)
 import {
   useConversations,
   useConversationMembers,
@@ -10,8 +11,6 @@ import {
   useMarkRead,
 } from "../chat/hooks";
 import "../chat/chat.css";
-
-const DEMO_USER_EMAIL = "alice@example.com";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -767,11 +766,13 @@ export default function FloatingChatWidget({
   onToggle,
   onOpenFullChat,
   initialConvId,
+  currentUserId,
 }: {
   isOpen: boolean;
   onToggle: () => void;
   onOpenFullChat: () => void;
   initialConvId?: Id<"conversations"> | null;
+  currentUserId: Id<"users">;
 }) {
   const [activeConvId, setActiveConvId] = useState<Id<"conversations"> | null>(
     initialConvId ?? null,
@@ -784,21 +785,9 @@ export default function FloatingChatWidget({
     }
   }, [initialConvId]);
 
-  const demoUser = useQuery(api.functions.users.queries.getUserByEmail, {
-    email: DEMO_USER_EMAIL,
-  });
-
   const conversations =
-    (useConversations(demoUser?._id) as ConversationItem[] | undefined) ?? [];
+    (useConversations(currentUserId) as ConversationItem[] | undefined) ?? [];
 
-  if (demoUser === undefined) return null; // still loading
-
-  if (demoUser === null) {
-    // TODO: replace with real auth — no demo user seeded yet
-    return null;
-  }
-
-  const currentUserId = demoUser._id;
   const latestConv = conversations[0];
 
   if (isOpen) {
@@ -817,7 +806,7 @@ export default function FloatingChatWidget({
   return (
     <CollapsedChatButton
       latestConv={latestConv}
-      unreadCount={0} // TODO: wire up real unread count from messageReads table
+      unreadCount={0}
       onClick={onToggle}
     />
   );
