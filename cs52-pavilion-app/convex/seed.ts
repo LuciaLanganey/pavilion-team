@@ -128,12 +128,9 @@ export const seedDemoData = mutation({
       email: "alice@example.com",
       createdAt: timestamp - 86400000 * 7,
       lastSeenAt: timestamp - 60000,
-<<<<<<< Updated upstream
-=======
       username: "alice_chen",
       userRole: "vendor",
       ...demoProfileForUser({ name: "Alice Chen", variant: 0, userRole: "vendor" }),
->>>>>>> Stashed changes
     });
 
     const bobId = await ctx.db.insert("users", {
@@ -141,12 +138,9 @@ export const seedDemoData = mutation({
       email: "bob@example.com",
       createdAt: timestamp - 86400000 * 5,
       lastSeenAt: timestamp - 3600000,
-<<<<<<< Updated upstream
-=======
       username: "bob_martinez",
       userRole: "buyer",
       ...demoProfileForUser({ name: "Bob Martinez", variant: 1, userRole: "buyer" }),
->>>>>>> Stashed changes
     });
 
     const carolId = await ctx.db.insert("users", {
@@ -154,12 +148,9 @@ export const seedDemoData = mutation({
       email: "carol@example.com",
       createdAt: timestamp - 86400000 * 3,
       lastSeenAt: timestamp - 7200000,
-<<<<<<< Updated upstream
-=======
       username: "carol_kim",
       userRole: "buyer",
       ...demoProfileForUser({ name: "Carol Kim", variant: 2, userRole: "buyer" }),
->>>>>>> Stashed changes
     });
 
     const dmId = await ctx.db.insert("conversations", {

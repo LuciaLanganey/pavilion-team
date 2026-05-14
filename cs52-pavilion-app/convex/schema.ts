@@ -10,8 +10,6 @@ export default defineSchema({
     tokenIdentifier: v.optional(v.string()),
     createdAt: v.number(),
     lastSeenAt: v.optional(v.number()),
-<<<<<<< Updated upstream
-=======
     username: v.optional(v.string()),
     userRole: v.optional(v.union(v.literal("vendor"), v.literal("buyer"))),
     /** Display / job role (not chat admin/member; see conversationMembers.role) */
@@ -31,7 +29,6 @@ export default defineSchema({
     ),
     companyName: v.optional(v.string()),
     companyDescription: v.optional(v.string()),
->>>>>>> Stashed changes
   })
     .index("by_email", ["email"])
     .index("by_token", ["tokenIdentifier"]),
