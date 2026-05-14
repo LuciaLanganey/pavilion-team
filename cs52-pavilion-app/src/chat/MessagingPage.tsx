@@ -42,12 +42,6 @@ type MemberUser = {
   avatarUrl?: string;
 };
 
-type Member = {
-  userId: Id<"users">;
-  role: "admin" | "member";
-  user: MemberUser | null;
-};
-
 // ── Avatar ────────────────────────────────────────────────────────────────────
 
 function Avatar({ user, size = 28 }: { user: MemberUser | null | undefined; size?: number }) {
@@ -447,109 +441,6 @@ function Composer({
       <button type="button" onClick={onSend} disabled={!inputValue.trim()}>
         Send
       </button>
-    </div>
-  );
-}
-
-// ── Small floating chat box ───────────────────────────────────────────────────
-
-function SmallChatBox({
-  conversationId,
-  currentUserId,
-  conversationTitle,
-  messages,
-  members,
-  onExpand,
-}: {
-  conversationId: Id<"conversations">;
-  currentUserId: Id<"users">;
-  conversationTitle: string | undefined;
-  messages: MessageListItem[];
-  members: Member[] | undefined;
-  onExpand: () => void;
-}) {
-  const sendMessage = useSendMessage();
-  const [inputValue, setInputValue] = useState("");
-
-  // Draggable state — start bottom-right
-  const [pos, setPos] = useState({ x: window.innerWidth - 360, y: window.innerHeight - 460 });
-  const dragging = useRef(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      if (!dragging.current) return;
-      setPos({
-        x: Math.max(0, Math.min(window.innerWidth - 340, e.clientX - dragOffset.current.x)),
-        y: Math.max(0, Math.min(window.innerHeight - 440, e.clientY - dragOffset.current.y)),
-      });
-    };
-    const onUp = () => { dragging.current = false; };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-  }, []);
-
-  const memberMap = new Map<string, MemberUser>(
-    (members ?? [])
-      .filter((m) => m.user)
-      .map((m) => [m.userId as string, m.user as MemberUser]),
-  );
-
-  const otherMember = (members ?? []).find((m) => m.userId !== currentUserId);
-  const otherUser = otherMember?.user ?? undefined;
-  const currentUser = memberMap.get(currentUserId as string);
-
-  const handleSend = async () => {
-    const content = inputValue.trim();
-    if (!content) return;
-    setInputValue("");
-    try {
-      await sendMessage({ conversationId, senderId: currentUserId, content, contentType: "text" });
-    } catch (err) {
-      console.error("Failed to send message:", err);
-      setInputValue(content);
-    }
-  };
-
-  return (
-    <div
-      className="chat-small-box"
-      style={{ left: pos.x, top: pos.y }}
-    >
-      {/* Draggable header */}
-      <div
-        className="chat-small-header"
-        onMouseDown={(e) => {
-          dragging.current = true;
-          dragOffset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
-          e.preventDefault();
-        }}
-      >
-        <Avatar user={otherUser} size={26} />
-        <span className="chat-small-title">{conversationTitle ?? otherUser?.name ?? "Chat"}</span>
-        <button
-          type="button"
-          className="chat-small-expand"
-          onClick={onExpand}
-          title="Expand to full chat"
-          aria-label="Expand to full chat"
-        >
-          ⤢
-        </button>
-      </div>
-
-      <MessageList
-        messages={messages}
-        currentUserId={currentUserId}
-        memberMap={memberMap}
-        currentUser={currentUser}
-      />
-
-      <Composer inputValue={inputValue} onChange={setInputValue} onSend={() => void handleSend()} />
     </div>
   );
 }

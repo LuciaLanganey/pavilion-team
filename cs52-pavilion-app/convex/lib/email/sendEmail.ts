@@ -12,7 +12,8 @@
 //   MAILGUN_API_KEY + MAILGUN_DOMAIN
 //   POSTMARK_API_KEY
 
-import { SendEmailOptions, InboundEmail, EmailProvider } from "./types";
+import type { SendEmailOptions, InboundEmail, EmailProvider } from "./types";
+import { nodeEnv } from "../nodeEnv";
 
 // ── SendGrid ─────────────────────────────────────────────────────────────────
 
@@ -258,20 +259,20 @@ let cachedProvider: EmailProvider | null = null;
 export function initializeEmailProvider(): EmailProvider {
   if (cachedProvider) return cachedProvider;
 
-  const name = (process.env.EMAIL_PROVIDER ?? "mock").toLowerCase();
+  const name = (nodeEnv("EMAIL_PROVIDER") ?? "mock").toLowerCase();
 
   switch (name) {
     case "sendgrid":
-      cachedProvider = new SendGridProvider(process.env.SENDGRID_API_KEY ?? "");
+      cachedProvider = new SendGridProvider(nodeEnv("SENDGRID_API_KEY") ?? "");
       break;
     case "mailgun":
       cachedProvider = new MailgunProvider(
-        process.env.MAILGUN_API_KEY ?? "",
-        process.env.MAILGUN_DOMAIN ?? "",
+        nodeEnv("MAILGUN_API_KEY") ?? "",
+        nodeEnv("MAILGUN_DOMAIN") ?? "",
       );
       break;
     case "postmark":
-      cachedProvider = new PostmarkProvider(process.env.POSTMARK_API_KEY ?? "");
+      cachedProvider = new PostmarkProvider(nodeEnv("POSTMARK_API_KEY") ?? "");
       break;
     case "mock":
     default:
@@ -287,9 +288,9 @@ export function initializeEmailProvider(): EmailProvider {
 export async function sendEmail(
   options: SendEmailOptions,
 ): Promise<{ messageId: string }> {
-  if (!process.env.EMAIL_FROM) console.warn("[EMAIL] EMAIL_FROM not set");
-  if (!process.env.APP_BASE_URL) console.warn("[EMAIL] APP_BASE_URL not set");
-  if (!process.env.EMAIL_REPLY_DOMAIN) console.warn("[EMAIL] EMAIL_REPLY_DOMAIN not set");
+  if (!nodeEnv("EMAIL_FROM")) console.warn("[EMAIL] EMAIL_FROM not set");
+  if (!nodeEnv("APP_BASE_URL")) console.warn("[EMAIL] APP_BASE_URL not set");
+  if (!nodeEnv("EMAIL_REPLY_DOMAIN")) console.warn("[EMAIL] EMAIL_REPLY_DOMAIN not set");
 
   return initializeEmailProvider().send(options);
 }
