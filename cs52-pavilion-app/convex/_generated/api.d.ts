@@ -16,11 +16,13 @@ import type * as functions_notifications_emailNotifications from "../functions/n
 import type * as functions_users_mutations from "../functions/users/mutations.js";
 import type * as functions_users_queries from "../functions/users/queries.js";
 import type * as http from "../http.js";
+import type * as lib_demoPeople from "../lib/demoPeople.js";
 import type * as lib_email_index from "../lib/email/index.js";
 import type * as lib_email_sendEmail from "../lib/email/sendEmail.js";
 import type * as lib_email_templates_newMessageNotification from "../lib/email/templates/newMessageNotification.js";
 import type * as lib_email_types from "../lib/email/types.js";
 import type * as lib_helpers from "../lib/helpers.js";
+import type * as lib_nodeEnv from "../lib/nodeEnv.js";
 import type * as people from "../people.js";
 import type * as seed from "../seed.js";
 
@@ -39,11 +41,13 @@ declare const fullApi: ApiFromModules<{
   "functions/users/mutations": typeof functions_users_mutations;
   "functions/users/queries": typeof functions_users_queries;
   http: typeof http;
+  "lib/demoPeople": typeof lib_demoPeople;
   "lib/email/index": typeof lib_email_index;
   "lib/email/sendEmail": typeof lib_email_sendEmail;
   "lib/email/templates/newMessageNotification": typeof lib_email_templates_newMessageNotification;
   "lib/email/types": typeof lib_email_types;
   "lib/helpers": typeof lib_helpers;
+  "lib/nodeEnv": typeof lib_nodeEnv;
   people: typeof people;
   seed: typeof seed;
 }>;

@@ -7,6 +7,7 @@ import {
   renderNewMessageNotificationText,
 } from "../../lib/email/templates/newMessageNotification";
 import { generateThreadId } from "../../lib/helpers";
+import { nodeEnv } from "../../lib/nodeEnv";
 
 /**
  * Sends email notifications to every conversation member except the sender.
@@ -43,10 +44,10 @@ export const notifyRecipients = internalAction({
     if (!sender) return;
 
     const threadId = generateThreadId(conversationId);
-    const replyDomain = process.env.EMAIL_REPLY_DOMAIN ?? "example.com";
-    const appBaseUrl = process.env.APP_BASE_URL ?? "";
-    const emailFrom = process.env.EMAIL_FROM ?? "noreply@example.com";
-    const emailFromName = process.env.EMAIL_FROM_NAME ?? "Procurement System";
+    const replyDomain = nodeEnv("EMAIL_REPLY_DOMAIN") ?? "example.com";
+    const appBaseUrl = nodeEnv("APP_BASE_URL") ?? "";
+    const emailFrom = nodeEnv("EMAIL_FROM") ?? "noreply@example.com";
+    const emailFromName = nodeEnv("EMAIL_FROM_NAME") ?? "Procurement System";
 
     const conversationTitle =
       conversation?.title ?? "Procurement Conversation";

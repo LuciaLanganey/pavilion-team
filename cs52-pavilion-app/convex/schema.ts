@@ -5,12 +5,30 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
+    /** Profile picture URL */
     avatarUrl: v.optional(v.string()),
     tokenIdentifier: v.optional(v.string()),
     createdAt: v.number(),
     lastSeenAt: v.optional(v.number()),
     username: v.optional(v.string()),
     userRole: v.optional(v.union(v.literal("vendor"), v.literal("buyer"))),
+    /** Display / job role (not chat admin/member; see conversationMembers.role) */
+    role: v.optional(v.string()),
+    location: v.optional(v.string()),
+    bio: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    website: v.optional(v.string()),
+    responseTime: v.optional(v.string()),
+    preferences: v.optional(
+      v.object({
+        theme: v.optional(
+          v.union(v.literal("light"), v.literal("dark"), v.literal("system")),
+        ),
+        emailNotifications: v.optional(v.boolean()),
+      }),
+    ),
+    companyName: v.optional(v.string()),
+    companyDescription: v.optional(v.string()),
   })
     .index("by_email", ["email"])
     .index("by_token", ["tokenIdentifier"]),
@@ -75,6 +93,7 @@ export default defineSchema({
     storageId: v.string(),
     fileName: v.string(),
     mimeType: v.string(),
+    
     sizeBytes: v.number(),
     createdAt: v.number(),
   })
@@ -102,6 +121,9 @@ export default defineSchema({
     location: v.string(),
     avatarUrl: v.string(),
     company: v.string(),
-  }),
-  
+    responseTime: v.optional(v.string()),
+    preferences: v.optional(v.array(v.string())),
+    companyName: v.optional(v.string()),
+    companyDescription: v.optional(v.string()),
+  }).index("by_email", ["email"]),
 });

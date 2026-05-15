@@ -87,7 +87,6 @@ function generatePdf(
 
   const PAGE_W = 210;
   const MARGIN = 20;
-  const CONTENT_W = PAGE_W - MARGIN * 2;
   const PAGE_H = 297;
   const FOOTER_H = 14;
   const CONTENT_BOTTOM = PAGE_H - FOOTER_H - 5;

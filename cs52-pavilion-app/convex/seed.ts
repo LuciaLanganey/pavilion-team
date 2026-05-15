@@ -1,4 +1,99 @@
 import { mutation } from "./_generated/server";
+import { v } from "convex/values";
+import { DEMO_PEOPLE } from "./lib/demoPeople";
+
+function avatarUrlFor(name: string) {
+  const seed = encodeURIComponent(name);
+  return `https://api.dicebear.com/7.x/avataa/svg?seed=${seed}`;
+}
+
+function demoProfileForUser(args: { name: string; variant: number; userRole?: "vendor" | "buyer" }) {
+  const { name, variant, userRole } = args;
+  const roles = [
+    "Government Contracts Manager",
+    "Public Sector Sales Lead",
+    "RFP Specialist",
+  ];
+  const cities = [
+    "Sacramento, CA",
+    "Washington, DC",
+    "Austin, TX",
+  ];
+  const bios = [
+    "Managing state and local government contracts and compliance.",
+    "Helping agencies find the right solutions through competitive bidding.",
+    "Specialist in responding to RFPs and navigating procurement portals.",
+  ];
+  const phones = ["+1 (415) 555-0101", "+1 (512) 555-0142", "+1 (206) 555-0198"];
+  const responseTimes = [
+    "Usually within 1 hour",
+    "Within a few hours",
+    "Same day",
+  ];
+  const themes = ["light", "dark", "system"] as const;
+  const i = variant % roles.length;
+  const slug = name.replace(/\s+/g, "-").toLowerCase();
+
+  const baseProfile = {
+    avatarUrl: avatarUrlFor(name),
+    role: roles[i],
+    location: cities[i],
+    bio: bios[i],
+    phone: phones[i],
+    website: `https://pavilion.example/u/${slug}`,
+    responseTime: responseTimes[i],
+    preferences: {
+      theme: themes[i],
+      emailNotifications: i !== 1,
+    },
+  };
+
+  if (userRole === "vendor") {
+    const companyNames = [
+      "GovTech Solutions Inc.",
+      "BuildRight Construction Corp.",
+      "MedSupply Government Division",
+    ];
+    const companyDescriptions = [
+      "Providing modern IT infrastructure and cloud software solutions for local governments.",
+      "Specializing in large-scale public works and infrastructure construction projects.",
+      "Supplying state health departments with critical medical and emergency equipment.",
+    ];
+    return {
+      ...baseProfile,
+      companyName: companyNames[i],
+      companyDescription: companyDescriptions[i],
+    };
+  }
+
+  return baseProfile;
+}
+
+/**
+ * Fills profile columns on existing users. Skips users who already have `phone`
+ * set unless `overwrite` is true. Run:
+ *   npx convex run seed:backfillUserProfiles
+ *   npx convex run seed:backfillUserProfiles '{"overwrite":true}'
+ */
+export const backfillUserProfiles = mutation({
+  args: { overwrite: v.optional(v.boolean()) },
+  handler: async (ctx, { overwrite }) => {
+    const users = await ctx.db.query("users").collect();
+    let patched = 0;
+    for (let i = 0; i < users.length; i++) {
+      const u = users[i];
+      if (!overwrite && u.phone !== undefined) continue;
+      const profile = demoProfileForUser({
+        name: u.name,
+        variant: i,
+        userRole: u.userRole as "vendor" | "buyer",
+      });
+      await ctx.db.patch(u._id, profile);
+      patched++;
+    }
+    return { patched, total: users.length };
+  },
+});
 
 /**
  * Idempotent demo data for local Convex. Run:
@@ -12,7 +107,18 @@ export const seedDemoData = mutation({
       .withIndex("by_email", (q) => q.eq("email", "alice@example.com"))
       .unique();
     if (existing) {
-      return { skipped: true as const, message: "Demo data already present." };
+      let peopleInserted = 0;
+      if ((await ctx.db.query("people").first()) === null) {
+        for (const person of DEMO_PEOPLE) {
+          await ctx.db.insert("people", person);
+          peopleInserted++;
+        }
+      }
+      return {
+        skipped: true as const,
+        message: "Demo data already present.",
+        peopleInserted,
+      };
     }
 
     const timestamp = Date.now();
@@ -24,6 +130,7 @@ export const seedDemoData = mutation({
       lastSeenAt: timestamp - 60000,
       username: "alice_chen",
       userRole: "vendor",
+      ...demoProfileForUser({ name: "Alice Chen", variant: 0, userRole: "vendor" }),
     });
 
     const bobId = await ctx.db.insert("users", {
@@ -33,6 +140,7 @@ export const seedDemoData = mutation({
       lastSeenAt: timestamp - 3600000,
       username: "bob_martinez",
       userRole: "buyer",
+      ...demoProfileForUser({ name: "Bob Martinez", variant: 1, userRole: "buyer" }),
     });
 
     const carolId = await ctx.db.insert("users", {
@@ -42,6 +150,7 @@ export const seedDemoData = mutation({
       lastSeenAt: timestamp - 7200000,
       username: "carol_kim",
       userRole: "buyer",
+      ...demoProfileForUser({ name: "Carol Kim", variant: 2, userRole: "buyer" }),
     });
 
     const dmId = await ctx.db.insert("conversations", {
@@ -161,6 +270,14 @@ export const seedDemoData = mutation({
       isDeleted: false,
     });
 
+    let peopleInserted = 0;
+    if ((await ctx.db.query("people").first()) === null) {
+      for (const person of DEMO_PEOPLE) {
+        await ctx.db.insert("people", person);
+        peopleInserted++;
+      }
+    }
+
     return {
       skipped: false as const,
       aliceId,
@@ -168,6 +285,7 @@ export const seedDemoData = mutation({
       carolId,
       dmId,
       groupId,
+      peopleInserted,
     };
   },
 });
