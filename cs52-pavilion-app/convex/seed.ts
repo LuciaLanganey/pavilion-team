@@ -31,7 +31,7 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Managing state and local government contracts and compliance.",
     "Helping agencies find the right solutions through competitive bidding.",
     "Specialist in responding to RFPs and navigating procurement portals.",
-    "David designs secure cloud environments for state agencies and municipalities.",
+    "Daniel designs secure cloud environments for state agencies and municipalities.",
     "Elena specializes in cost estimation and bidding for municipal infrastructure projects.",
     "Michael ensures timely delivery of emergency medical supplies to county hospitals.",
     "Rachel helps local governments implement zero-trust security architectures and compliance.",
@@ -358,14 +358,13 @@ export const seedExtraUsers = mutation({
         avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
-        name: "David Kim",
+        name: "Daniel Kim",
         email: "dkim@govtechsolutions.com",
         createdAt: timestamp - 86400000 * 1,
         lastSeenAt: timestamp - 300000,
-        username: "david_kim",
+        username: "daniel_kim",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+        ...demoProfileForUser({ name: "Daniel Kim", variant: 3, userRole: "vendor" }),
       },
       {
         name: "Elena Rodriguez",
@@ -375,7 +374,6 @@ export const seedExtraUsers = mutation({
         username: "elena_rodriguez",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
       },
       {
         name: "Michael Chang",
@@ -385,7 +383,6 @@ export const seedExtraUsers = mutation({
         username: "michael_chang",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/men/44.jpg",
       },
       {
         name: "Rachel Foster",
@@ -395,7 +392,6 @@ export const seedExtraUsers = mutation({
         username: "rachel_foster",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
     ];
 
@@ -480,14 +476,13 @@ export const clearAndReseedExtraUsers = mutation({
         avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
-        name: "David Kim",
+        name: "Daniel Kim",
         email: "dkim@govtechsolutions.com",
         createdAt: timestamp - 86400000 * 1,
         lastSeenAt: timestamp - 300000,
-        username: "david_kim",
+        username: "daniel_kim",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+        ...demoProfileForUser({ name: "Daniel Kim", variant: 3, userRole: "vendor" }),
       },
       {
         name: "Elena Rodriguez",
@@ -497,7 +492,6 @@ export const clearAndReseedExtraUsers = mutation({
         username: "elena_rodriguez",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
       },
       {
         name: "Michael Chang",
@@ -507,7 +501,6 @@ export const clearAndReseedExtraUsers = mutation({
         username: "michael_chang",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/men/44.jpg",
       },
       {
         name: "Rachel Foster",
@@ -517,7 +510,6 @@ export const clearAndReseedExtraUsers = mutation({
         username: "rachel_foster",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
-        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
     ];
 
