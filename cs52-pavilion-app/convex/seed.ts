@@ -13,16 +13,28 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Government Contracts Manager",
     "Public Sector Sales Lead",
     "RFP Specialist",
+    "Cloud Solutions Architect",
+    "Senior Estimator",
+    "Logistics Coordinator",
+    "Cybersecurity Consultant",
   ];
   const cities = [
     "Sacramento, CA",
     "Washington, DC",
     "Austin, TX",
+    "San Francisco, CA",
+    "Sacramento, CA",
+    "Los Angeles, CA",
+    "San Francisco, CA",
   ];
   const bios = [
     "Managing state and local government contracts and compliance.",
     "Helping agencies find the right solutions through competitive bidding.",
     "Specialist in responding to RFPs and navigating procurement portals.",
+    "David designs secure cloud environments for state agencies and municipalities.",
+    "Elena specializes in cost estimation and bidding for municipal infrastructure projects.",
+    "Michael ensures timely delivery of emergency medical supplies to county hospitals.",
+    "Rachel helps local governments implement zero-trust security architectures and compliance.",
   ];
   const phones = ["+1 (415) 555-0101", "+1 (512) 555-0142", "+1 (206) 555-0198"];
   const responseTimes = [
@@ -298,47 +310,83 @@ export const seedExtraUsers = mutation({
       {
         name: "Jordan Blake",
         email: "jordan.blake@supplyhub.com",
-        avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
         createdAt: timestamp - 86400000 * 10,
         lastSeenAt: timestamp - 3600000,
         username: "jordan_blake",
         userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
       },
       {
         name: "Aisha Okonkwo",
         email: "aisha.okonkwo@marketbridge.io",
-        avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
         createdAt: timestamp - 86400000 * 8,
         lastSeenAt: timestamp - 7200000,
         username: "aisha_okw",
         userRole: "buyer" as const,
+        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
       },
       {
         name: "Derek Nguyen",
         email: "derek.nguyen@tradeflow.com",
-        avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
         createdAt: timestamp - 86400000 * 6,
         lastSeenAt: timestamp - 1800000,
         username: "dereknguyen92",
         userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
       },
       {
         name: "Sofia Reyes",
         email: "sofia.reyes@shopcraft.co",
-        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
         createdAt: timestamp - 86400000 * 4,
         lastSeenAt: timestamp - 600000,
         username: "sofia_crafts",
         userRole: "buyer" as const,
+        ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
       },
       {
         name: "Eli Thornton",
         email: "eli.thornton@bulkdirect.net",
-        avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
         createdAt: timestamp - 86400000 * 2,
         lastSeenAt: timestamp - 900000,
         username: "eli_thornton",
         userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+      },
+      {
+        name: "David Kim",
+        email: "dkim@govtechsolutions.com",
+        createdAt: timestamp - 86400000 * 1,
+        lastSeenAt: timestamp - 300000,
+        username: "david_kim",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
+      },
+      {
+        name: "Elena Rodriguez",
+        email: "erodriguez@buildrightcorp.com",
+        createdAt: timestamp - 86400000 * 1.5,
+        lastSeenAt: timestamp - 400000,
+        username: "elena_rodriguez",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
+      },
+      {
+        name: "Michael Chang",
+        email: "mchang@medsupplygov.com",
+        createdAt: timestamp - 86400000 * 2.5,
+        lastSeenAt: timestamp - 500000,
+        username: "michael_chang",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
+      },
+      {
+        name: "Rachel Foster",
+        email: "rfoster@govtechsolutions.com",
+        createdAt: timestamp - 86400000 * 3.5,
+        lastSeenAt: timestamp - 600000,
+        username: "rachel_foster",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
       },
     ];
 
@@ -357,6 +405,112 @@ export const seedExtraUsers = mutation({
   },
 });
 
+export const clearAndReseedExtraUsers = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect();
+    // Keep Alice, Bob, Carol, delete the rest to reseed cleanly
+    const keepEmails = ["alice@example.com", "bob@example.com", "carol@example.com"];
+    for (const user of allUsers) {
+      if (!keepEmails.includes(user.email)) {
+        await ctx.db.delete(user._id);
+      }
+    }
+    
+    // Now call the logic from seedExtraUsers
+    const timestamp = Date.now();
+    const extraUsers = [
+      {
+        name: "Jordan Blake",
+        email: "jordan.blake@supplyhub.com",
+        createdAt: timestamp - 86400000 * 10,
+        lastSeenAt: timestamp - 3600000,
+        username: "jordan_blake",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
+      },
+      {
+        name: "Aisha Okonkwo",
+        email: "aisha.okonkwo@marketbridge.io",
+        createdAt: timestamp - 86400000 * 8,
+        lastSeenAt: timestamp - 7200000,
+        username: "aisha_okw",
+        userRole: "buyer" as const,
+        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
+      },
+      {
+        name: "Derek Nguyen",
+        email: "derek.nguyen@tradeflow.com",
+        createdAt: timestamp - 86400000 * 6,
+        lastSeenAt: timestamp - 1800000,
+        username: "dereknguyen92",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
+      },
+      {
+        name: "Sofia Reyes",
+        email: "sofia.reyes@shopcraft.co",
+        createdAt: timestamp - 86400000 * 4,
+        lastSeenAt: timestamp - 600000,
+        username: "sofia_crafts",
+        userRole: "buyer" as const,
+        ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
+      },
+      {
+        name: "Eli Thornton",
+        email: "eli.thornton@bulkdirect.net",
+        createdAt: timestamp - 86400000 * 2,
+        lastSeenAt: timestamp - 900000,
+        username: "eli_thornton",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+      },
+      {
+        name: "David Kim",
+        email: "dkim@govtechsolutions.com",
+        createdAt: timestamp - 86400000 * 1,
+        lastSeenAt: timestamp - 300000,
+        username: "david_kim",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
+      },
+      {
+        name: "Elena Rodriguez",
+        email: "erodriguez@buildrightcorp.com",
+        createdAt: timestamp - 86400000 * 1.5,
+        lastSeenAt: timestamp - 400000,
+        username: "elena_rodriguez",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
+      },
+      {
+        name: "Michael Chang",
+        email: "mchang@medsupplygov.com",
+        createdAt: timestamp - 86400000 * 2.5,
+        lastSeenAt: timestamp - 500000,
+        username: "michael_chang",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
+      },
+      {
+        name: "Rachel Foster",
+        email: "rfoster@govtechsolutions.com",
+        createdAt: timestamp - 86400000 * 3.5,
+        lastSeenAt: timestamp - 600000,
+        username: "rachel_foster",
+        userRole: "vendor" as const,
+        ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
+      },
+    ];
+
+    const inserted: string[] = [];
+    for (const user of extraUsers) {
+      await ctx.db.insert("users", user);
+      inserted.push(user.email);
+    }
+    return { inserted };
+  },
+});
 export const migrateSellerToBuyer = mutation({
   args: {},
   handler: async (ctx) => {
