@@ -17,6 +17,11 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Senior Estimator",
     "Logistics Coordinator",
     "Cybersecurity Consultant",
+    "Supply Chain Director",
+    "Strategic Sourcing Manager",
+    "Trade Compliance Officer",
+    "Digital Transformation Lead",
+    "Bulk Purchasing Coordinator",
   ];
   const cities = [
     "Sacramento, CA",
@@ -26,6 +31,11 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Sacramento, CA",
     "Los Angeles, CA",
     "San Francisco, CA",
+    "Chicago, IL",
+    "New York, NY",
+    "Seattle, WA",
+    "Denver, CO",
+    "Phoenix, AZ",
   ];
   const bios = [
     "Managing state and local government contracts and compliance.",
@@ -35,6 +45,11 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Elena specializes in cost estimation and bidding for municipal infrastructure projects.",
     "Michael ensures timely delivery of emergency medical supplies to county hospitals.",
     "Rachel helps local governments implement zero-trust security architectures and compliance.",
+    "Jordan specializes in logistics and supply chain optimization for large-scale vendors.",
+    "Aisha focuses on strategic sourcing and vendor relationship management.",
+    "Derek manages trade compliance and cross-border procurement operations.",
+    "Sofia oversees digital transformation initiatives for public sector procurement.",
+    "Eli coordinates bulk purchasing and distribution for municipal agencies.",
   ];
   const phones = ["+1 (415) 555-0101", "+1 (512) 555-0142", "+1 (206) 555-0198"];
   const responseTimes = [
@@ -314,7 +329,7 @@ export const seedExtraUsers = mutation({
         lastSeenAt: timestamp - 3600000,
         username: "jordan_blake",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Jordan Blake", variant: 7, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
       },
       {
@@ -324,7 +339,7 @@ export const seedExtraUsers = mutation({
         lastSeenAt: timestamp - 7200000,
         username: "aisha_okw",
         userRole: "buyer" as const,
-        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
+        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 8, userRole: "buyer" }),
         avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
       },
       {
@@ -334,7 +349,7 @@ export const seedExtraUsers = mutation({
         lastSeenAt: timestamp - 1800000,
         username: "dereknguyen92",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Derek Nguyen", variant: 9, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       },
       {
@@ -344,7 +359,7 @@ export const seedExtraUsers = mutation({
         lastSeenAt: timestamp - 600000,
         username: "sofia_crafts",
         userRole: "buyer" as const,
-        ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
+        ...demoProfileForUser({ name: "Sofia Reyes", variant: 10, userRole: "buyer" }),
         avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
       {
@@ -354,7 +369,7 @@ export const seedExtraUsers = mutation({
         lastSeenAt: timestamp - 900000,
         username: "eli_thornton",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Eli Thornton", variant: 11, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
@@ -432,7 +447,7 @@ export const clearAndReseedExtraUsers = mutation({
         lastSeenAt: timestamp - 3600000,
         username: "jordan_blake",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Jordan Blake", variant: 7, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
       },
       {
@@ -442,7 +457,7 @@ export const clearAndReseedExtraUsers = mutation({
         lastSeenAt: timestamp - 7200000,
         username: "aisha_okw",
         userRole: "buyer" as const,
-        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
+        ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 8, userRole: "buyer" }),
         avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
       },
       {
@@ -452,7 +467,7 @@ export const clearAndReseedExtraUsers = mutation({
         lastSeenAt: timestamp - 1800000,
         username: "dereknguyen92",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Derek Nguyen", variant: 9, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       },
       {
@@ -462,7 +477,7 @@ export const clearAndReseedExtraUsers = mutation({
         lastSeenAt: timestamp - 600000,
         username: "sofia_crafts",
         userRole: "buyer" as const,
-        ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
+        ...demoProfileForUser({ name: "Sofia Reyes", variant: 10, userRole: "buyer" }),
         avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
       {
@@ -472,7 +487,7 @@ export const clearAndReseedExtraUsers = mutation({
         lastSeenAt: timestamp - 900000,
         username: "eli_thornton",
         userRole: "vendor" as const,
-        ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+        ...demoProfileForUser({ name: "Eli Thornton", variant: 11, userRole: "vendor" }),
         avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
