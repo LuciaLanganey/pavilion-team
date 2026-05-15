@@ -315,6 +315,7 @@ export const seedExtraUsers = mutation({
         username: "jordan_blake",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
       },
       {
         name: "Aisha Okonkwo",
@@ -324,6 +325,7 @@ export const seedExtraUsers = mutation({
         username: "aisha_okw",
         userRole: "buyer" as const,
         ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
       },
       {
         name: "Derek Nguyen",
@@ -333,6 +335,7 @@ export const seedExtraUsers = mutation({
         username: "dereknguyen92",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       },
       {
         name: "Sofia Reyes",
@@ -342,6 +345,7 @@ export const seedExtraUsers = mutation({
         username: "sofia_crafts",
         userRole: "buyer" as const,
         ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
       {
         name: "Eli Thornton",
@@ -351,6 +355,7 @@ export const seedExtraUsers = mutation({
         username: "eli_thornton",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
         name: "David Kim",
@@ -360,6 +365,7 @@ export const seedExtraUsers = mutation({
         username: "david_kim",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
       },
       {
         name: "Elena Rodriguez",
@@ -369,6 +375,7 @@ export const seedExtraUsers = mutation({
         username: "elena_rodriguez",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
       },
       {
         name: "Michael Chang",
@@ -378,6 +385,7 @@ export const seedExtraUsers = mutation({
         username: "michael_chang",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/44.jpg",
       },
       {
         name: "Rachel Foster",
@@ -387,6 +395,7 @@ export const seedExtraUsers = mutation({
         username: "rachel_foster",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
     ];
 
@@ -428,6 +437,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "jordan_blake",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Jordan Blake", variant: 3, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/11.jpg",
       },
       {
         name: "Aisha Okonkwo",
@@ -437,6 +447,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "aisha_okw",
         userRole: "buyer" as const,
         ...demoProfileForUser({ name: "Aisha Okonkwo", variant: 4, userRole: "buyer" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/23.jpg",
       },
       {
         name: "Derek Nguyen",
@@ -446,6 +457,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "dereknguyen92",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Derek Nguyen", variant: 5, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       },
       {
         name: "Sofia Reyes",
@@ -455,6 +467,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "sofia_crafts",
         userRole: "buyer" as const,
         ...demoProfileForUser({ name: "Sofia Reyes", variant: 6, userRole: "buyer" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
       {
         name: "Eli Thornton",
@@ -464,6 +477,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "eli_thornton",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Eli Thornton", variant: 7, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/78.jpg",
       },
       {
         name: "David Kim",
@@ -473,6 +487,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "david_kim",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "David Kim", variant: 3, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
       },
       {
         name: "Elena Rodriguez",
@@ -482,6 +497,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "elena_rodriguez",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Elena Rodriguez", variant: 4, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
       },
       {
         name: "Michael Chang",
@@ -491,6 +507,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "michael_chang",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Michael Chang", variant: 5, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/men/44.jpg",
       },
       {
         name: "Rachel Foster",
@@ -500,6 +517,7 @@ export const clearAndReseedExtraUsers = mutation({
         username: "rachel_foster",
         userRole: "vendor" as const,
         ...demoProfileForUser({ name: "Rachel Foster", variant: 6, userRole: "vendor" }),
+        avatarUrl: "https://randomuser.me/api/portraits/women/55.jpg",
       },
     ];
 
