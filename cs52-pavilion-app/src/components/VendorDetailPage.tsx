@@ -65,29 +65,6 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-const HighlightCheckIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="14" fill="#dcfce7" />
-    <path d="M10 16l4 4 8-8" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="16" cy="16" r="13" stroke="#16a34a" strokeWidth="1.5" fill="none" />
-  </svg>
-);
-
-const HighlightPinIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="14" fill="#dcfce7" />
-    <path d="M16 9c-2.76 0-5 2.24-5 5 0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5zm0 6.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="#16a34a" />
-  </svg>
-);
-
-const HighlightChatIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="14" fill="#ccfbf1" />
-    <path d="M9 11c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-7l-3 3V11z" stroke="#0f766e" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-    <path d="M12 14h8M12 17h5" stroke="#0f766e" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
-
 const PavilionIcon = () => (
   <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
     <circle cx="20" cy="20" r="20" fill="#ede9fe" />
@@ -95,6 +72,39 @@ const PavilionIcon = () => (
     <path d="M15 28 L15 33" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
     <path d="M25 28 L25 33" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
     <path d="M11 28 L29 28" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
+const ContractIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 3h8l3 3v15H5V3h3z" />
+    <path d="M9 13l2 2 4-5" />
+  </svg>
+);
+
+const BoltIcon = () => (
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" />
+  </svg>
+);
+
+const TagIcon = () => (
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.59 13.41 12 22l-8.59-8.59A2 2 0 0 1 2.83 12V4.83A2 2 0 0 1 4.83 2h7.17a2 2 0 0 1 1.41.59l7.18 7.18a2 2 0 0 1 0 2.83zM7.5 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+  </svg>
+);
+
+const ChatBubbleIcon = () => (
+  <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M4 5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H9l-5 5v-5a3 3 0 0 1-3-3V5h3z" />
+  </svg>
+);
+
+const StorefrontIcon = () => (
+  <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 10h16l-1.5-6h-13L4 10z" />
+    <path d="M5 10v9h14v-9" />
+    <path d="M9 19v-5h6v5" />
   </svg>
 );
 
@@ -107,52 +117,166 @@ const navItems = [
   { icon: <HelpCircleIcon />, label: "Help" },
 ];
 
-const highlights = [
-  { icon: <HighlightCheckIcon />, text: "Used by education and CA agencies", bg: "bg-green-50" },
-  { icon: <HighlightPinIcon />, text: "Local supplier in San Jose", bg: "bg-green-50" },
-  { icon: <HighlightChatIcon />, text: "3 recent responses", bg: "bg-teal-50" },
-];
+type ListHighlightKind = "contract" | "fast" | "discount" | "local" | "response";
+type VendorLogoVariant = "cintas" | "instaforce" | "imperial";
 
-const inlineCategories = ["paper", "food service supplies"];
-const extraCategories = [
-  "janitorial supplies",
-  "medical housekeeping supplies",
-  "food service products",
-  "carpet cleaners",
-];
+type VendorContact = {
+  id: number;
+  name: string;
+  role: string;
+  location: string;
+  image: string;
+  popup: Omit<PopupMenuProps, "onOpenChat">;
+};
 
-const contacts = Array.from({ length: 4 }, (_, i) => ({
+type Vendor = {
+  id: string;
+  name: string;
+  logoVariant: VendorLogoVariant;
+  description: string;
+  listHighlights: { kind: ListHighlightKind; text: string }[];
+  categories: string[];
+  contacts: VendorContact[];
+};
+
+const larryMarContacts = Array.from({ length: 4 }, (_, i) => ({
   id: i,
   name: "Larry Mar",
   role: "Sales Representative specializing in sanitizer, cleaning supplies",
   location: "San Jose, CA",
   image: "https://randomuser.me/api/portraits/men/32.jpg",
+  popup: {
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
+    profile: {
+      name: "Larry Mar",
+      role: "Sales Representative specializing in sanitizer, cleaning supplies",
+      location: "San Jose, CA",
+      bio: "Larry supports California schools and agencies with tailored sanitizer and cleaning programs, quick samples, and reliable follow-through on large bids.",
+    },
+    contact: {
+      email: "larry.mar@imperialdade.com",
+      phoneNumber: "(408) 555-0142",
+      website: "https://www.imperialdade.com",
+    },
+    facts: {
+      responseTime: "Typically replies within one business day on Pavilion requests.",
+      preferences: "Prefers detailed line-item RFPs and can coordinate on-site walkthroughs in the Bay Area.",
+    },
+  },
 }));
 
-const firstLarryMarPopupProps: PopupMenuProps = {
-  image: contacts[0].image,
-  profile: {
-    name: contacts[0].name,
-    role: contacts[0].role,
-    location: contacts[0].location,
-    bio: "Larry supports California schools and agencies with tailored sanitizer and cleaning programs, quick samples, and reliable follow-through on large bids.",
+const vendors: Vendor[] = [
+  {
+    id: "cintas",
+    name: "Cintas Corporation",
+    logoVariant: "cintas",
+    description:
+      "Cintas powers state and local agencies with essential solutions from uniforms and facility services to safety gear, compliance training, and emergency preparedness. Trusted by over 1 million businesses, we help government teams operate cleaner, safer, and more efficiently.",
+    listHighlights: [
+      { kind: "contract", text: "Has cooperative contracts" },
+      { kind: "fast", text: "Responds in <24 hrs" },
+      { kind: "discount", text: "Government discount" },
+    ],
+    categories: [
+      "Cleaning services",
+      "Uniform laundry services",
+      "Laundry services",
+      "Uniform services",
+      "First aid services",
+    ],
+    contacts: larryMarContacts,
   },
-  contact: {
-    email: "larry.mar@imperialdade.com",
-    phoneNumber: "(408) 555-0142",
-    website: "https://www.imperialdade.com",
+  {
+    id: "instaforce",
+    name: "INSTAFORCE",
+    logoVariant: "instaforce",
+    description:
+      "INSTAFORCE is a San Rafael, CA-based facility and property maintenance contractor that specializes in maintaining commercial and retail properties. It offers a wide range of services including carpentry, repairs, remodeling, fixture installation, electrical and plumbing work, flooring, painting, exterior cleaning, concrete repairs, and disaster recovery services such as flood and water damage mitigation.",
+    listHighlights: [
+      { kind: "contract", text: "Has cooperative contracts" },
+      { kind: "local", text: "Local supplier in San Rafael" },
+      { kind: "response", text: "1 recent response" },
+    ],
+    categories: ["Facility maintenance", "Property repairs", "Exterior cleaning", "Disaster recovery", "Remodeling"],
+    contacts: larryMarContacts,
   },
-  facts: {
-    responseTime: "Typically replies within one business day on Pavilion requests.",
-    preferences: "Prefers detailed line-item RFPs and can coordinate on-site walkthroughs in the Bay Area.",
+  {
+    id: "imperial-dade",
+    name: "Imperial Bag & Paper Co LLC",
+    logoVariant: "imperial",
+    description:
+      "Imperial Dade is a leading distributor of foodservice packaging, janitorial supplies, cleaning products, and facility maintenance essentials. It supports education, healthcare, hospitality, and government buyers with broad inventory and practical supply chain programs.",
+    listHighlights: [
+      { kind: "contract", text: "Used by education and CA agencies" },
+      { kind: "local", text: "Local supplier in San Jose" },
+      { kind: "response", text: "3 recent responses" },
+    ],
+    categories: ["Paper", "Food service supplies", "Janitorial supplies", "Medical housekeeping supplies", "Carpet cleaners"],
+    contacts: larryMarContacts,
   },
-};
+];
+
+function ListHighlightIcon({ kind }: { kind: ListHighlightKind }) {
+  const classes = kind === "fast" ? "text-lime-500" : kind === "local" ? "text-teal-500" : kind === "response" ? "text-teal-600" : "text-lime-500";
+
+  if (kind === "fast") {
+    return <span className={classes}><BoltIcon /></span>;
+  }
+
+  if (kind === "discount") {
+    return <span className={classes}><TagIcon /></span>;
+  }
+
+  if (kind === "local") {
+    return <span className={classes}><MapPinIcon /></span>;
+  }
+
+  if (kind === "response") {
+    return <span className={classes}><ChatBubbleIcon /></span>;
+  }
+
+  return <span className={classes}><ContractIcon /></span>;
+}
+
+function VendorLogo({ vendor }: { vendor: Vendor }) {
+  if (vendor.logoVariant === "cintas") {
+    return (
+      <div className="flex h-11 w-14 items-center justify-center rounded-lg bg-white text-center">
+        <div>
+          <div className="text-[8px] font-extrabold leading-none text-blue-900">CINTAS</div>
+          <div className="mt-0.5 text-[5px] font-bold leading-none text-red-500">READY FOR THE WORKDAY</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (vendor.logoVariant === "imperial") {
+    return (
+      <div className="flex h-11 w-14 items-center justify-center rounded-lg bg-white text-center">
+        <div>
+          <div className="text-[8px] font-bold leading-tight tracking-tight text-gray-700">Imperial</div>
+          <div className="my-0.5 h-[1.5px] w-full rounded bg-gray-700" />
+          <div className="text-[8px] font-bold leading-tight tracking-wide text-orange-500">Dade</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-violet-50 text-violet-200">
+      <StorefrontIcon />
+    </div>
+  );
+}
 
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => void }) {
+  const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [contactsOpen, setContactsOpen] = useState(true);
-  const [larryPopupOpen, setLarryPopupOpen] = useState(false);
+  const [contactPopupId, setContactPopupId] = useState<number | null>(null);
+  const selectedVendor = vendors.find((vendor) => vendor.id === selectedVendorId) ?? null;
+  const selectedContact = selectedVendor?.contacts.find((contact) => contact.id === contactPopupId) ?? null;
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -213,8 +337,8 @@ export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => vo
           </div>
         </header>
 
-        {/* ── Scrollable Content ── */}
-        <main className="flex-1 overflow-y-auto p-6">
+        {/* ── Content ── */}
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-6">
 
           {/* Back link */}
           <a
@@ -225,195 +349,160 @@ export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => vo
             Return to search results
           </a>
 
-          <div className="flex gap-5">
+          <div className="grid min-h-0 flex-1 grid-cols-[minmax(620px,1fr)_340px] gap-5">
+            <section className="min-w-0 overflow-y-auto pr-1">
+              <div className="space-y-5 pb-4">
+                {vendors.map((vendor) => (
+                  <button
+                    key={vendor.id}
+                    type="button"
+                    className={`w-full rounded-[1.75rem] border bg-white p-5 text-left shadow-sm transition hover:border-indigo-200 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                      selectedVendorId === vendor.id ? "border-indigo-400 ring-2 ring-indigo-100" : "border-gray-200"
+                    }`}
+                    onClick={() => {
+                      setSelectedVendorId(vendor.id);
+                      setContactsOpen(true);
+                      setContactPopupId(null);
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex min-w-0 items-center gap-4">
+                        <VendorLogo vendor={vendor} />
+                        <h1 className="truncate text-xl font-semibold text-gray-950 underline decoration-2 underline-offset-2">
+                          {vendor.name}
+                        </h1>
+                      </div>
+                      <a
+                        href={`mailto:hello@${vendor.id}.example`}
+                        className="shrink-0 rounded-2xl border border-indigo-700 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        Email this vendor
+                      </a>
+                    </div>
 
-            {/* ── Left: Vendor Card ── */}
-            <div className="flex-1 min-w-0">
-              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-[15px] text-gray-700">
+                      {vendor.listHighlights.map((highlight) => (
+                        <div key={highlight.text} className="flex items-center gap-2">
+                          <ListHighlightIcon kind={highlight.kind} />
+                          <span>{highlight.text}</span>
+                        </div>
+                      ))}
+                    </div>
 
-                {/* Vendor header */}
-                <div className="flex items-center gap-4 mb-6 pb-5 border-b border-gray-100">
-                  {/* Logo */}
-                  <div className="w-[88px] h-[60px] border border-gray-200 rounded-lg flex items-center justify-center shrink-0 bg-white overflow-hidden">
-                    <div className="text-center px-1">
-                      <div className="text-[9px] font-bold text-gray-700 leading-tight tracking-tight">Imperial</div>
-                      <div className="w-full h-[1.5px] bg-gray-700 my-0.5 rounded" />
-                      <div className="text-[9px] font-bold text-orange-500 leading-tight tracking-wide">Dade</div>
+                    <p className="mt-5 line-clamp-4 text-[15px] leading-relaxed text-gray-700">
+                      {vendor.description}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {vendor.categories.map((category, index) => (
+                        <span
+                          key={category}
+                          className={`rounded-full px-3 py-1 text-sm text-gray-700 ${
+                            index === 0 ? "bg-gray-200 font-semibold" : "bg-gray-100"
+                          }`}
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="min-w-0 overflow-y-auto">
+              {!selectedVendor ? (
+                <div className="flex min-h-full items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center shadow-sm">
+                  <p className="text-lg font-semibold text-gray-500">Click a vendor to learn more</p>
+                </div>
+              ) : (
+                <div className="flex justify-end pb-4">
+                  <div className="flex w-[310px] flex-col gap-4">
+                    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <PavilionIcon />
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">Backed by Pavilion</div>
+                          <p className="mt-1 text-xs leading-relaxed text-gray-500">
+                            If this vendor is slow to respond, we'll follow up for you and help find great
+                            alternatives.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                      <button
+                        className="flex w-full items-center justify-between border-b border-gray-200 px-4 py-3.5 transition-colors hover:bg-gray-50"
+                        onClick={() => setContactsOpen((o) => !o)}
+                      >
+                        <span className="text-sm font-semibold text-gray-900">Contacts at {selectedVendor.name}</span>
+                        <span className={`text-gray-400 transition-transform ${contactsOpen ? "" : "-rotate-90"}`}>
+                          <ChevronDownIcon />
+                        </span>
+                      </button>
+
+                      {contactsOpen && (
+                        <div>
+                          {selectedVendor.contacts.map((contact) => (
+                            <button
+                              key={contact.id}
+                              type="button"
+                              className="flex w-full cursor-pointer items-start gap-3 border-b border-gray-100 px-4 py-3.5 text-left transition-colors last:border-0 hover:bg-indigo-50/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
+                              onClick={() => setContactPopupId(contact.id)}
+                              aria-label={`Open profile for ${contact.name}`}
+                            >
+                              <img
+                                src={contact.image}
+                                alt=""
+                                className="h-12 w-12 shrink-0 rounded-full bg-gray-200 object-cover"
+                              />
+                              <div className="min-w-0">
+                                <div className="text-sm font-semibold text-gray-900">{contact.name}</div>
+                                <div className="mt-0.5 text-xs leading-snug text-gray-500">{contact.role}</div>
+                                <div className="mt-1 flex items-center gap-1 text-xs text-gray-400">
+                                  <MapPinIcon />
+                                  {contact.location}
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <h1 className="text-xl font-semibold text-gray-900">
-                    Imperial Bag &amp; Paper Co LLC
-                  </h1>
                 </div>
-
-                {/* Business highlights */}
-                <section className="mb-6">
-                  <h2 className="text-sm font-semibold text-gray-900 mb-3">Business highlights</h2>
-                  <div className="flex gap-3">
-                    {highlights.map(({ icon, text, bg }) => (
-                      <div
-                        key={text}
-                        className={`${bg} rounded-lg px-3 py-3 flex flex-col items-center gap-2 flex-1 text-center`}
-                      >
-                        {icon}
-                        <span className="text-xs text-gray-600 leading-snug">{text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                {/* Products and services */}
-                <section className="mb-6">
-                  <h2 className="text-sm font-semibold text-gray-900 mb-3">Products and services</h2>
-                  <p className="text-sm text-gray-600 mb-2">
-                    Imperial Bag &amp; Paper Co LLC serves the following categories:{" "}
-                    {inlineCategories.map((cat, i) => (
-                      <span key={cat}>
-                        <span className="inline-block px-2.5 py-0.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                          {cat}
-                        </span>
-                        {i < inlineCategories.length - 1 && " "}
-                      </span>
-                    ))}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {extraCategories.map((cat) => (
-                      <span
-                        key={cat}
-                        className="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-full text-xs"
-                      >
-                        {cat}
-                      </span>
-                    ))}
-                    <a href="#" className="px-1 py-1 text-indigo-600 text-xs hover:underline font-medium">
-                      See all
-                    </a>
-                  </div>
-                </section>
-
-                {/* About the business */}
-                <section>
-                  <h2 className="text-sm font-semibold text-gray-900 mb-3">About the business</h2>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    Imperial Bag &amp; Paper Co LLC dba Imperial Dade is a leading distributor of foodservice
-                    packaging, janitorial supplies, and cleaning products, serving customers across North America,
-                    Puerto Rico, and the Caribbean. The company specializes in delivering high-quality products and
-                    supply chain solutions to industries such as foodservice, education, healthcare, hospitality,
-                    and more. With an expansive distribution network and deep product inventory, Imperial Dade
-                    supports its clients with tailored programs in sanitation, sustainability, and facility
-                    maintenance. Known for its reliability and service-first approach, Imperial Dade helps
-                    organizations...
-                  </p>
-                </section>
-              </div>
-            </div>
-
-            {/* ── Right Sidebar ── */}
-            <div className="w-[310px] shrink-0 flex flex-col gap-4">
-
-              {/* Backed by Pavilion */}
-              <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <PavilionIcon />
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">Backed by Pavilion</div>
-                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                      If this vendor is slow to respond, we'll follow up for you and help find great
-                      alternatives.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contacts */}
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                <button
-                  className="w-full flex items-center justify-between px-4 py-3.5 border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                  onClick={() => setContactsOpen((o) => !o)}
-                >
-                  <span className="font-semibold text-gray-900 text-sm">Contacts</span>
-                  <span className={`text-gray-400 transition-transform ${contactsOpen ? "" : "-rotate-90"}`}>
-                    <ChevronDownIcon />
-                  </span>
-                </button>
-
-                {contactsOpen && (
-                  <div>
-                    {contacts.map((contact) => {
-                      const body = (
-                        <>
-                          <img
-                            src={contact.image}
-                            alt={contact.id === 0 ? "" : contact.name}
-                            className="w-12 h-12 rounded-full object-cover shrink-0 bg-gray-200"
-                          />
-                          <div className="min-w-0">
-                            <div className="font-semibold text-gray-900 text-sm">{contact.name}</div>
-                            <div className="text-xs text-gray-500 mt-0.5 leading-snug">{contact.role}</div>
-                            <div className="flex items-center gap-1 mt-1 text-xs text-gray-400">
-                              <MapPinIcon />
-                              {contact.location}
-                            </div>
-                          </div>
-                        </>
-                      );
-
-                      if (contact.id === 0) {
-                        return (
-                          <button
-                            key={contact.id}
-                            type="button"
-                            className="flex w-full cursor-pointer items-start gap-3 border-b border-gray-100 px-4 py-3.5 text-left transition-colors hover:bg-indigo-50/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
-                            onClick={() => setLarryPopupOpen(true)}
-                            aria-label={`Open profile for ${contact.name}`}
-                          >
-                            {body}
-                          </button>
-                        );
-                      }
-
-                      return (
-                        <div
-                          key={contact.id}
-                          className="flex items-start gap-3 border-b border-gray-100 px-4 py-3.5 last:border-0 hover:bg-gray-50 transition-colors"
-                        >
-                          {body}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-            </div>
+              )}
+            </section>
           </div>
         </main>
       </div>
 
-      {larryPopupOpen && (
+      {selectedContact && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4"
           role="presentation"
-          onClick={() => setLarryPopupOpen(false)}
+          onClick={() => setContactPopupId(null)}
         >
           <div
             className="relative max-h-[min(90vh,900px)] w-full max-w-4xl overflow-y-auto rounded-[2rem] pt-12 shadow-2xl"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="larry-popup-title"
+            aria-labelledby="contact-popup-title"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               className="absolute right-4 top-4 z-10 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-700 shadow ring-1 ring-gray-200 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-              onClick={() => setLarryPopupOpen(false)}
+              onClick={() => setContactPopupId(null)}
             >
               Close
             </button>
-            <div id="larry-popup-title" className="sr-only">
-              {firstLarryMarPopupProps.profile.name} profile
+            <div id="contact-popup-title" className="sr-only">
+              {selectedContact.popup.profile.name} profile
             </div>
-            <PopupMenu {...firstLarryMarPopupProps} onOpenChat={onOpenChat} />
+            <PopupMenu {...selectedContact.popup} onOpenChat={onOpenChat} />
           </div>
         </div>
       )}
