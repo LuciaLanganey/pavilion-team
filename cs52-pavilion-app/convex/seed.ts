@@ -1,6 +1,5 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { DEMO_PEOPLE } from "./lib/demoPeople";
 
 function avatarUrlFor(name: string) {
   const seed = encodeURIComponent(name);
@@ -107,18 +106,7 @@ export const seedDemoData = mutation({
       .withIndex("by_email", (q) => q.eq("email", "alice@example.com"))
       .unique();
     if (existing) {
-      let peopleInserted = 0;
-      if ((await ctx.db.query("people").first()) === null) {
-        for (const person of DEMO_PEOPLE) {
-          await ctx.db.insert("people", person);
-          peopleInserted++;
-        }
-      }
-      return {
-        skipped: true as const,
-        message: "Demo data already present.",
-        peopleInserted,
-      };
+      return { skipped: true as const, message: "Demo data already present." };
     }
 
     const timestamp = Date.now();
@@ -270,14 +258,6 @@ export const seedDemoData = mutation({
       isDeleted: false,
     });
 
-    let peopleInserted = 0;
-    if ((await ctx.db.query("people").first()) === null) {
-      for (const person of DEMO_PEOPLE) {
-        await ctx.db.insert("people", person);
-        peopleInserted++;
-      }
-    }
-
     return {
       skipped: false as const,
       aliceId,
@@ -285,7 +265,6 @@ export const seedDemoData = mutation({
       carolId,
       dmId,
       groupId,
-      peopleInserted,
     };
   },
 });
@@ -369,5 +348,35 @@ export const migrateSellerToBuyer = mutation({
       }
     }
     return { patched };
+  },
+});
+
+/**
+ * Assign vendor-role users to vendor companies round-robin.
+ * Safe to re-run — skips users who already have a vendorId.
+ *   npx convex run seed:assignVendorCompanies
+ */
+export const assignVendorCompanies = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const vendors = await ctx.db.query("vendors").collect();
+    if (vendors.length === 0) {
+      return { assigned: 0, message: "No vendors found — run vendors:seed first." };
+    }
+
+    const vendorUsers = await ctx.db
+      .query("users")
+      .collect()
+      .then((all) => all.filter((u) => u.userRole === "vendor"));
+
+    let assigned = 0;
+    for (let i = 0; i < vendorUsers.length; i++) {
+      const user = vendorUsers[i];
+      if (user.vendorId !== undefined) continue;
+      const vendor = vendors[i % vendors.length];
+      await ctx.db.patch(user._id, { vendorId: vendor._id });
+      assigned++;
+    }
+    return { assigned, total: vendorUsers.length };
   },
 });
