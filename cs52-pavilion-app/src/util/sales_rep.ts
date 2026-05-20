@@ -8,9 +8,9 @@ const sampleRep = {
     bio: "Short bio here.",
   },
   contact: {
-    email: "john@example.com",
+    email: "ssanand@stanford.edu",
     phoneNumber: "555-0100",
-    website: "https://example.com",
+    website: "https://shrey.example.com",
   },
   facts: {
     responseTime: "Usually within 1 hour",

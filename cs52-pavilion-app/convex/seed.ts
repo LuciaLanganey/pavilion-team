@@ -37,21 +37,27 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     "Denver, CO",
     "Phoenix, AZ",
   ];
+  const firstName = name.split(" ")[0];
   const bios = [
     "Managing state and local government contracts and compliance.",
     "Helping agencies find the right solutions through competitive bidding.",
     "Specialist in responding to RFPs and navigating procurement portals.",
-    "Daniel designs secure cloud environments for state agencies and municipalities.",
-    "Elena specializes in cost estimation and bidding for municipal infrastructure projects.",
-    "Michael ensures timely delivery of emergency medical supplies to county hospitals.",
-    "Rachel helps local governments implement zero-trust security architectures and compliance.",
-    "Jordan specializes in logistics and supply chain optimization for large-scale vendors.",
-    "Aisha focuses on strategic sourcing and vendor relationship management.",
-    "Derek manages trade compliance and cross-border procurement operations.",
-    "Sofia oversees digital transformation initiatives for public sector procurement.",
-    "Eli coordinates bulk purchasing and distribution for municipal agencies.",
+    `${firstName} designs secure cloud environments for state agencies and municipalities.`,
+    `${firstName} specializes in cost estimation and bidding for municipal infrastructure projects.`,
+    `${firstName} ensures timely delivery of emergency medical supplies to county hospitals.`,
+    `${firstName} helps local governments implement zero-trust security architectures and compliance.`,
+    `${firstName} specializes in logistics and supply chain optimization for large-scale vendors.`,
+    `${firstName} focuses on strategic sourcing and vendor relationship management.`,
+    `${firstName} manages trade compliance and cross-border procurement operations.`,
+    `${firstName} oversees digital transformation initiatives for public sector procurement.`,
+    `${firstName} coordinates bulk purchasing and distribution for municipal agencies.`,
   ];
-  const phones = ["+1 (415) 555-0101", "+1 (512) 555-0142", "+1 (206) 555-0198"];
+  let phone: string | undefined = undefined;
+  if (name === "Shrey") phone = "6692844460";
+  if (name === "Tara") phone = "9162185896";
+  if (name === "Isha") phone = "4109883883";
+  if (name === "Jess") phone = "6505099069";
+
   const responseTimes = [
     "Usually within 1 hour",
     "Within a few hours",
@@ -66,7 +72,7 @@ function demoProfileForUser(args: { name: string; variant: number; userRole?: "v
     role: roles[i],
     location: cities[i],
     bio: bios[i],
-    phone: phones[i],
+    ...(phone ? { phone } : {}),
     website: `https://pavilion.example/u/${slug}`,
     responseTime: responseTimes[i],
     preferences: {
@@ -131,7 +137,7 @@ export const seedDemoData = mutation({
   handler: async (ctx) => {
     const existing = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", "alice@example.com"))
+      .withIndex("by_email", (q) => q.eq("email", "ssanand@stanford.edu"))
       .unique();
     if (existing) {
       let peopleInserted = 0;
@@ -151,33 +157,43 @@ export const seedDemoData = mutation({
     const timestamp = Date.now();
 
     const aliceId = await ctx.db.insert("users", {
-      name: "Alice Chen",
-      email: "alice@example.com",
+      name: "Shrey",
+      email: "ssanand@stanford.edu",
       createdAt: timestamp - 86400000 * 7,
       lastSeenAt: timestamp - 60000,
-      username: "alice_chen",
+      username: "shrey",
       userRole: "vendor",
-      ...demoProfileForUser({ name: "Alice Chen", variant: 0, userRole: "vendor" }),
+      ...demoProfileForUser({ name: "Shrey", variant: 0, userRole: "vendor" }),
     });
 
     const bobId = await ctx.db.insert("users", {
-      name: "Bob Martinez",
-      email: "bob@example.com",
+      name: "Tara",
+      email: "taralyn@stanford.edu",
       createdAt: timestamp - 86400000 * 5,
       lastSeenAt: timestamp - 3600000,
-      username: "bob_martinez",
+      username: "tara",
       userRole: "buyer",
-      ...demoProfileForUser({ name: "Bob Martinez", variant: 1, userRole: "buyer" }),
+      ...demoProfileForUser({ name: "Tara", variant: 1, userRole: "buyer" }),
     });
 
     const carolId = await ctx.db.insert("users", {
-      name: "Carol Kim",
-      email: "carol@example.com",
+      name: "Isha",
+      email: "ishaanb@stanford.edu",
       createdAt: timestamp - 86400000 * 3,
       lastSeenAt: timestamp - 7200000,
-      username: "carol_kim",
+      username: "isha",
       userRole: "buyer",
-      ...demoProfileForUser({ name: "Carol Kim", variant: 2, userRole: "buyer" }),
+      ...demoProfileForUser({ name: "Isha", variant: 2, userRole: "buyer" }),
+    });
+
+    const jessId = await ctx.db.insert("users", {
+      name: "Jess",
+      email: "jessicawjsu5@stanford.edu",
+      createdAt: timestamp - 86400000 * 2,
+      lastSeenAt: timestamp - 3600000,
+      username: "jess",
+      userRole: "vendor",
+      ...demoProfileForUser({ name: "Jess", variant: 3, userRole: "vendor" }),
     });
 
     const dmId = await ctx.db.insert("conversations", {
@@ -204,7 +220,7 @@ export const seedDemoData = mutation({
     const dm1 = await ctx.db.insert("messages", {
       conversationId: dmId,
       senderId: aliceId,
-      content: "Hey Bob! Are you free for a call tomorrow at 2pm?",
+      content: "Hey Tara! Are you free for a call tomorrow at 2pm?",
       contentType: "text",
       createdAt: timestamp - 86400000,
       isDeleted: false,
@@ -250,7 +266,7 @@ export const seedDemoData = mutation({
       createdBy: aliceId,
       createdAt: timestamp - 86400000 * 4,
       lastMessageAt: timestamp - 1800000,
-      lastMessagePreview: "Carol: I'll have the designs ready by EOD",
+      lastMessagePreview: "Isha: I'll have the designs ready by EOD",
     });
 
     await ctx.db.insert("conversationMembers", {
@@ -283,7 +299,7 @@ export const seedDemoData = mutation({
     await ctx.db.insert("messages", {
       conversationId: groupId,
       senderId: bobId,
-      content: "Thanks Alice! Excited to be here.",
+      content: "Thanks Shrey! Excited to be here.",
       contentType: "text",
       createdAt: timestamp - 86400000 * 3,
       isDeleted: false,
@@ -430,11 +446,20 @@ export const clearAndReseedExtraUsers = mutation({
   handler: async (ctx) => {
     const allUsers = await ctx.db.query("users").collect();
     // Keep Alice, Bob, Carol, delete the rest to reseed cleanly
-    const keepEmails = ["alice@example.com", "bob@example.com", "carol@example.com"];
+    const keepEmails = ["ssanand@stanford.edu", "taralyn@stanford.edu", "ishaanb@stanford.edu", "jessicawjsu5@stanford.edu"];
     for (const user of allUsers) {
       if (!keepEmails.includes(user.email)) {
         await ctx.db.delete(user._id);
       }
+    }
+    
+    // Also clear the people table to reseed it cleanly
+    const allPeople = await ctx.db.query("people").collect();
+    for (const person of allPeople) {
+      await ctx.db.delete(person._id);
+    }
+    for (const person of DEMO_PEOPLE) {
+      await ctx.db.insert("people", person);
     }
     
     // Now call the logic from seedExtraUsers
@@ -536,17 +561,14 @@ export const clearAndReseedExtraUsers = mutation({
     return { inserted };
   },
 });
-export const migrateSellerToBuyer = mutation({
+export const clearAll = mutation({
   args: {},
   handler: async (ctx) => {
-    const allUsers = await ctx.db.query("users").collect();
-    let patched = 0;
-    for (const user of allUsers) {
-      if ((user.userRole as string) === "seller") {
-        await ctx.db.patch(user._id, { userRole: "buyer" });
-        patched++;
+    for (const table of ["users", "people", "conversations", "conversationMembers", "messages", "messageReads"] as const) {
+      const items = await ctx.db.query(table).collect();
+      for (const item of items) {
+        await ctx.db.delete(item._id);
       }
     }
-    return { patched };
-  },
+  }
 });

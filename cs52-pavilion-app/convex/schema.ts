@@ -29,6 +29,7 @@ export default defineSchema({
     ),
     companyName: v.optional(v.string()),
     companyDescription: v.optional(v.string()),
+    vendorId: v.optional(v.string()),
   })
     .index("by_email", ["email"])
     .index("by_token", ["tokenIdentifier"]),
@@ -114,7 +115,7 @@ export default defineSchema({
   people: defineTable({
     name: v.string(),
     email: v.string(),
-    phone: v.string(),
+    phone: v.optional(v.string()),
     website: v.string(),
     role: v.string(),
     bio: v.string(),
