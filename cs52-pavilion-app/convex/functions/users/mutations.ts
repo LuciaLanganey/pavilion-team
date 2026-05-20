@@ -23,6 +23,7 @@ function pickUserProfilePatch(
     "website",
     "responseTime",
     "preferences",
+    "vendorId",
   ] as const;
   const patch: Record<string, unknown> = {};
   for (const key of keys) {
@@ -44,6 +45,7 @@ export const createOrUpdateUser = mutation({
     website: v.optional(v.string()),
     responseTime: v.optional(v.string()),
     preferences: userPreferencesArgs,
+    vendorId: v.optional(v.id("vendors")),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -91,6 +93,7 @@ export const updateProfile = mutation({
     website: v.optional(v.string()),
     responseTime: v.optional(v.string()),
     preferences: userPreferencesArgs,
+    vendorId: v.optional(v.id("vendors")),
   },
   handler: async (ctx, args) => {
     const { userId, ...updates } = args;
@@ -98,6 +101,19 @@ export const updateProfile = mutation({
     if (updates.name !== undefined) patch.name = updates.name;
     Object.assign(patch, pickUserProfilePatch(updates as Record<string, unknown>));
     await ctx.db.patch(userId, patch);
+  },
+});
+
+/** Assign or unassign a vendor company for a vendor-role user. */
+export const assignVendor = mutation({
+  args: {
+    userId: v.id("users"),
+    vendorId: v.union(v.id("vendors"), v.null()),
+  },
+  handler: async (ctx, { userId, vendorId }) => {
+    const user = await ctx.db.get(userId);
+    if (user === null) throw new Error(`User ${userId} not found`);
+    await ctx.db.patch(userId, { vendorId: vendorId ?? undefined });
   },
 });
 

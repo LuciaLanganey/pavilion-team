@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import type { Doc } from "../../convex/_generated/dataModel";
 import PopupMenu, { type PopupMenuProps } from "./popup_menu";
 
 // ── SVG Icons ──────────────────────────────────────────────────────────────
@@ -139,82 +142,89 @@ type Vendor = {
   contacts: VendorContact[];
 };
 
-const larryMarContacts = Array.from({ length: 4 }, (_, i) => ({
-  id: i,
-  name: "Larry Mar",
-  role: "Sales Representative specializing in sanitizer, cleaning supplies",
-  location: "San Jose, CA",
-  image: "https://randomuser.me/api/portraits/men/32.jpg",
-  popup: {
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-    profile: {
-      name: "Larry Mar",
-      role: "Sales Representative specializing in sanitizer, cleaning supplies",
-      location: "San Jose, CA",
-      bio: "Larry supports California schools and agencies with tailored sanitizer and cleaning programs, quick samples, and reliable follow-through on large bids.",
-    },
-    contact: {
-      email: "larry.mar@imperialdade.com",
-      phoneNumber: "(408) 555-0142",
-      website: "https://www.imperialdade.com",
-    },
-    facts: {
-      responseTime: "Typically replies within one business day on Pavilion requests.",
-      preferences: "Prefers detailed line-item RFPs and can coordinate on-site walkthroughs in the Bay Area.",
-    },
-  },
-}));
+function portraitUrlForSlug(slug: string): string {
+  let n = 0;
+  for (let i = 0; i < slug.length; i++) {
+    n += slug.charCodeAt(i);
+  }
+  return `https://randomuser.me/api/portraits/men/${n % 99}.jpg`;
+}
 
-const vendors: Vendor[] = [
-  {
-    id: "cintas",
-    name: "Cintas Corporation",
-    logoVariant: "cintas",
-    description:
-      "Cintas powers state and local agencies with essential solutions from uniforms and facility services to safety gear, compliance training, and emergency preparedness. Trusted by over 1 million businesses, we help government teams operate cleaner, safer, and more efficiently.",
-    listHighlights: [
-      { kind: "contract", text: "Has cooperative contracts" },
-      { kind: "fast", text: "Responds in <24 hrs" },
-      { kind: "discount", text: "Government discount" },
-    ],
-    categories: [
-      "Cleaning services",
-      "Uniform laundry services",
-      "Laundry services",
-      "Uniform services",
-      "First aid services",
-    ],
-    contacts: larryMarContacts,
-  },
-  {
-    id: "instaforce",
-    name: "INSTAFORCE",
+function highlightsFromVendor(doc: Doc<"vendors">): { kind: ListHighlightKind; text: string }[] {
+  const count = doc.activeContractCount ?? 0;
+  const rows: { kind: ListHighlightKind; text: string }[] = [
+    {
+      kind: "contract",
+      text: `${count} active contract${count === 1 ? "" : "s"}`,
+    },
+  ];
+  const loc = doc.location ?? doc.zipCode;
+  if (loc) {
+    rows.push({ kind: "local", text: loc });
+  }
+  if (doc.responseTimeSummary) {
+    rows.push({ kind: "response", text: doc.responseTimeSummary });
+  }
+  if (doc.offersGovernmentPricing) {
+    rows.push({ kind: "discount", text: "Government pricing available" });
+  }
+  if (rows.length === 1 && doc.searchQuery) {
+    rows.push({ kind: "fast", text: `Search focus: ${doc.searchQuery.replace(/\+/g, " ")}` });
+  }
+  return rows.slice(0, 5);
+}
+
+function contactsForVendor(doc: Doc<"vendors">): VendorContact[] {
+  const loc = doc.location ?? doc.zipCode ?? "United States";
+  const bio =
+    doc.description ??
+    "Reach out for cooperative contract vehicles, quotes, and Pavilion-supported procurement.";
+  const img = portraitUrlForSlug(doc.slug);
+  return [
+    {
+      id: 0,
+      name: `${doc.name} — sales`,
+      role: "Primary contact for quotes and contract programs",
+      location: loc,
+      image: img,
+      popup: {
+        image: img,
+        profile: {
+          name: `${doc.name} team`,
+          role: "Sales & cooperative contracts",
+          location: loc,
+          bio,
+        },
+        contact: {
+          email: `hello@${doc.slug}.example`,
+          phoneNumber: "(555) 010-0000",
+          website: `https://www.${doc.slug}.example`,
+        },
+        facts: {
+          responseTime: doc.responseTimeSummary ?? "Typical response times depend on request complexity.",
+          const spec = doc.specialties ?? [];
+          preferences:
+            spec.length > 0
+              ? `Focus areas: ${spec.slice(0, 4).join(", ")}.`
+              : "Open to detailed line-item RFPs and cooperative purchasing.",
+        },
+      },
+    },
+  ];
+}
+
+function vendorFromDoc(doc: Doc<"vendors">): Vendor {
+  const specialties = doc.specialties ?? [];
+  return {
+    id: doc.slug,
+    name: doc.name,
     logoVariant: "instaforce",
-    description:
-      "INSTAFORCE is a San Rafael, CA-based facility and property maintenance contractor that specializes in maintaining commercial and retail properties. It offers a wide range of services including carpentry, repairs, remodeling, fixture installation, electrical and plumbing work, flooring, painting, exterior cleaning, concrete repairs, and disaster recovery services such as flood and water damage mitigation.",
-    listHighlights: [
-      { kind: "contract", text: "Has cooperative contracts" },
-      { kind: "local", text: "Local supplier in San Rafael" },
-      { kind: "response", text: "1 recent response" },
-    ],
-    categories: ["Facility maintenance", "Property repairs", "Exterior cleaning", "Disaster recovery", "Remodeling"],
-    contacts: larryMarContacts,
-  },
-  {
-    id: "imperial-dade",
-    name: "Imperial Bag & Paper Co LLC",
-    logoVariant: "imperial",
-    description:
-      "Imperial Dade is a leading distributor of foodservice packaging, janitorial supplies, cleaning products, and facility maintenance essentials. It supports education, healthcare, hospitality, and government buyers with broad inventory and practical supply chain programs.",
-    listHighlights: [
-      { kind: "contract", text: "Used by education and CA agencies" },
-      { kind: "local", text: "Local supplier in San Jose" },
-      { kind: "response", text: "3 recent responses" },
-    ],
-    categories: ["Paper", "Food service supplies", "Janitorial supplies", "Medical housekeeping supplies", "Carpet cleaners"],
-    contacts: larryMarContacts,
-  },
-];
+    description: doc.description ?? "",
+    listHighlights: highlightsFromVendor(doc),
+    categories: specialties.length > 0 ? specialties : ["General supplies"],
+    contacts: contactsForVendor(doc),
+  };
+}
 
 function ListHighlightIcon({ kind }: { kind: ListHighlightKind }) {
   const classes = kind === "fast" ? "text-lime-500" : kind === "local" ? "text-teal-500" : kind === "response" ? "text-teal-600" : "text-lime-500";
@@ -272,6 +282,8 @@ function VendorLogo({ vendor }: { vendor: Vendor }) {
 // ── Component ──────────────────────────────────────────────────────────────
 
 export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => void }) {
+  const vendorDocs = useQuery(api.vendors.getAll);
+  const vendors = useMemo(() => (vendorDocs ?? []).map(vendorFromDoc), [vendorDocs]);
   const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
   const [contactsOpen, setContactsOpen] = useState(true);
   const [contactPopupId, setContactPopupId] = useState<number | null>(null);
@@ -352,62 +364,76 @@ export default function VendorDetailPage({ onOpenChat }: { onOpenChat?: () => vo
           <div className="grid min-h-0 flex-1 grid-cols-[minmax(620px,1fr)_340px] gap-5">
             <section className="min-w-0 overflow-y-auto pr-1">
               <div className="space-y-5 pb-4">
-                {vendors.map((vendor) => (
-                  <button
-                    key={vendor.id}
-                    type="button"
-                    className={`w-full rounded-[1.75rem] border bg-white p-5 text-left shadow-sm transition hover:border-indigo-200 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
-                      selectedVendorId === vendor.id ? "border-indigo-400 ring-2 ring-indigo-100" : "border-gray-200"
-                    }`}
-                    onClick={() => {
-                      setSelectedVendorId(vendor.id);
-                      setContactsOpen(true);
-                      setContactPopupId(null);
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex min-w-0 items-center gap-4">
-                        <VendorLogo vendor={vendor} />
-                        <h1 className="truncate text-xl font-semibold text-gray-950 underline decoration-2 underline-offset-2">
-                          {vendor.name}
-                        </h1>
-                      </div>
-                      <a
-                        href={`mailto:hello@${vendor.id}.example`}
-                        className="shrink-0 rounded-2xl border border-indigo-700 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        Email this vendor
-                      </a>
-                    </div>
-
-                    <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-[15px] text-gray-700">
-                      {vendor.listHighlights.map((highlight) => (
-                        <div key={highlight.text} className="flex items-center gap-2">
-                          <ListHighlightIcon kind={highlight.kind} />
-                          <span>{highlight.text}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <p className="mt-5 line-clamp-4 text-[15px] leading-relaxed text-gray-700">
-                      {vendor.description}
+                {vendorDocs === undefined ? (
+                  <div className="rounded-[1.75rem] border border-gray-200 bg-white p-10 text-center text-gray-500 shadow-sm">
+                    Loading vendors…
+                  </div>
+                ) : vendors.length === 0 ? (
+                  <div className="rounded-[1.75rem] border border-amber-200 bg-amber-50 p-8 text-center shadow-sm">
+                    <p className="font-semibold text-amber-900">No vendors in the database yet.</p>
+                    <p className="mt-2 text-sm text-amber-800">
+                      From <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">cs52-pavilion-app</code> run:{" "}
+                      <code className="rounded bg-amber-100 px-1.5 py-0.5 text-xs">npx convex run vendors:seed</code>
                     </p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {vendor.categories.map((category, index) => (
-                        <span
-                          key={category}
-                          className={`rounded-full px-3 py-1 text-sm text-gray-700 ${
-                            index === 0 ? "bg-gray-200 font-semibold" : "bg-gray-100"
-                          }`}
+                  </div>
+                ) : (
+                  vendors.map((vendor) => (
+                    <button
+                      key={vendor.id}
+                      type="button"
+                      className={`w-full rounded-[1.75rem] border bg-white p-5 text-left shadow-sm transition hover:border-indigo-200 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                        selectedVendorId === vendor.id ? "border-indigo-400 ring-2 ring-indigo-100" : "border-gray-200"
+                      }`}
+                      onClick={() => {
+                        setSelectedVendorId(vendor.id);
+                        setContactsOpen(true);
+                        setContactPopupId(null);
+                      }}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex min-w-0 items-center gap-4">
+                          <VendorLogo vendor={vendor} />
+                          <h1 className="truncate text-xl font-semibold text-gray-950 underline decoration-2 underline-offset-2">
+                            {vendor.name}
+                          </h1>
+                        </div>
+                        <a
+                          href={`mailto:hello@${vendor.id}.example`}
+                          className="shrink-0 rounded-2xl border border-indigo-700 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
+                          onClick={(event) => event.stopPropagation()}
                         >
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </button>
-                ))}
+                          Email this vendor
+                        </a>
+                      </div>
+
+                      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-[15px] text-gray-700">
+                        {vendor.listHighlights.map((highlight) => (
+                          <div key={highlight.text} className="flex items-center gap-2">
+                            <ListHighlightIcon kind={highlight.kind} />
+                            <span>{highlight.text}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <p className="mt-5 line-clamp-4 text-[15px] leading-relaxed text-gray-700">
+                        {vendor.description}
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {vendor.categories.map((category, index) => (
+                          <span
+                            key={category}
+                            className={`rounded-full px-3 py-1 text-sm text-gray-700 ${
+                              index === 0 ? "bg-gray-200 font-semibold" : "bg-gray-100"
+                            }`}
+                          >
+                            {category}
+                          </span>
+                        ))}
+                      </div>
+                    </button>
+                  ))
+                )}
               </div>
             </section>
 

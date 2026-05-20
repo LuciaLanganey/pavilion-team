@@ -12,6 +12,8 @@ export default defineSchema({
     lastSeenAt: v.optional(v.number()),
     username: v.optional(v.string()),
     userRole: v.optional(v.union(v.literal("vendor"), v.literal("buyer"))),
+    /** For vendor-role users: the vendor company they represent */
+    vendorId: v.optional(v.id("vendors")),
     /** Display / job role (not chat admin/member; see conversationMembers.role) */
     role: v.optional(v.string()),
     location: v.optional(v.string()),
@@ -110,20 +112,21 @@ export default defineSchema({
     rawThreadId: v.optional(v.string()),
   }).index("by_receivedAt", ["receivedAt"]),
   
-  
-  people: defineTable({
+  vendors: defineTable({
     name: v.string(),
-    email: v.string(),
-    phone: v.string(),
-    website: v.string(),
-    role: v.string(),
-    bio: v.string(),
-    location: v.string(),
-    avatarUrl: v.string(),
-    company: v.string(),
-    responseTime: v.optional(v.string()),
-    preferences: v.optional(v.array(v.string())),
-    companyName: v.optional(v.string()),
-    companyDescription: v.optional(v.string()),
-  }).index("by_email", ["email"]),
+    slug: v.string(),
+    activeContractCount: v.optional(v.number()),
+    location: v.optional(v.string()),
+    specialties: v.optional(v.array(v.string())),
+    description: v.optional(v.string()),
+    responseTimeSummary: v.optional(v.string()),
+    offersGovernmentPricing: v.optional(v.boolean()),
+    // Legacy URL-era rows (optional so old deployment data validates until `vendors:seed` runs)
+    supplierPageUrl: v.optional(v.string()),
+    requestShortId: v.optional(v.string()),
+    requestId: v.optional(v.string()),
+    searchQuery: v.optional(v.string()),
+    zipCode: v.optional(v.string()),
+    pageNavigationSource: v.optional(v.string()),
+  }).index("by_slug", ["slug"]),
 });
